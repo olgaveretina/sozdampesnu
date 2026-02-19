@@ -7,7 +7,7 @@
     <div class="col-lg-7">
         <h2 class="mb-4">Подарочные сертификаты</h2>
         <p class="lead text-muted mb-4">
-            Подарите близкому человеку возможность создать свою песню. Сертификат действует как скидка при оформлении заказа.
+            Подарите близкому человеку возможность создать свою песню. Сертификат действует 1 год. Применяется как скидка к заказу. Может оплатить 100% заказа.
         </p>
 
         <div class="card shadow-sm">
@@ -21,9 +21,9 @@
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Выберите номинал</label>
                             <div class="row g-3">
-                                @foreach([600 => 'Просто попробовать', 5000 => 'Хочу крутую песню', 15000 => 'Крутая песня + публикация'] as $price => $label)
+                                @foreach([600 => 'Просто попробовать', 5000 => 'Профессиональная песня', 15000 => 'Профессиональная песня + публикация'] as $price => $label)
                                     <div class="col-md-4">
-                                        <label class="card text-center border-2 {{ old('amount') == $price ? 'border-primary' : '' }}" style="cursor:pointer">
+                                        <label class="card h-100 text-center border-2 amount-card {{ old('amount') == $price ? 'border-primary' : '' }}" style="cursor:pointer">
                                             <div class="card-body py-3">
                                                 <input type="radio" name="amount" value="{{ $price }}" class="visually-hidden"
                                                        {{ old('amount') == $price ? 'checked' : '' }}>
@@ -77,6 +77,9 @@
 <script>
     document.querySelectorAll('input[name="amount"]').forEach(input => {
         input.addEventListener('change', () => {
+            document.querySelectorAll('.amount-card').forEach(c => c.classList.remove('border-primary'));
+            const card = input.closest('.amount-card');
+            if (card) card.classList.add('border-primary');
             document.getElementById('custom-amount-field').classList.toggle('d-none', input.value !== 'custom');
         });
     });

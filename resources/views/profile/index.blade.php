@@ -17,8 +17,8 @@
                     <a href="{{ route('orders.show', $order) }}" class="d-block text-decoration-none text-dark border-bottom px-4 py-3 hover-bg">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
-                                <strong>{{ $order->performer_name }}</strong>
-                                <span class="text-muted ms-2 small">{{ $order->planLabel() }}</span>
+                                <strong>{{ $order->song_name ?? $order->performer_name }}</strong>
+                                <span class="text-muted ms-2 small">{{ $order->performer_name }} · {{ $order->planLabel() }}</span>
                             </div>
                             <span class="badge bg-secondary">{{ $order->statusLabel() }}</span>
                         </div>

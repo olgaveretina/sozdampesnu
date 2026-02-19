@@ -28,6 +28,7 @@ class OrderResource extends Resource
         return $form->schema([
             Forms\Components\Section::make('Детали заказа')->schema([
                 Forms\Components\TextInput::make('performer_name')->label('Исполнитель')->disabled(),
+                Forms\Components\TextInput::make('song_name')->label('Название песни')->disabled(),
                 Forms\Components\Select::make('plan')->label('Тариф')
                     ->options(collect(Order::PLANS)->map(fn($p) => $p['name']))->disabled(),
                 Forms\Components\Select::make('status')->label('Статус')
@@ -49,6 +50,7 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->label('#')->sortable(),
+                Tables\Columns\TextColumn::make('song_name')->label('Название песни')->searchable(),
                 Tables\Columns\TextColumn::make('performer_name')->label('Исполнитель')->searchable(),
                 Tables\Columns\TextColumn::make('user.name')->label('Клиент')->searchable(),
                 Tables\Columns\TextColumn::make('plan')->label('Тариф')

@@ -104,8 +104,8 @@ $order->planLabel()    // returns Russian plan name
 | Plan | Russian Name | Price |
 |---|---|---|
 | 1 | Просто попробовать | 600 ₽ |
-| 2 | Хочу крутую песню | 5 000 ₽ |
-| 3 | Хочу крутую песню и публикацию | 15 000 ₽ |
+| 2 | Хочу профессиональную песню | 5 000 ₽ |
+| 3 | Хочу профессиональную песню и публикацию | 15 000 ₽ |
 
 ## Order Detail Page Features
 - Audio files: HTML5 `<audio>` player per file (if uploaded by admin)

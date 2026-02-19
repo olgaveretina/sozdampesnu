@@ -24,6 +24,7 @@ class OrderController extends Controller
         $rules = [
             'lyrics'                  => ['required', 'string', 'max:10000'],
             'performer_name'          => ['required', 'string', 'max:255'],
+            'song_name'               => ['required', 'string', 'max:255'],
             'music_style'             => ['required', 'string', 'max:2000'],
             'plan'                    => ['required', 'in:1,2,3'],
             'promo_code'              => ['nullable', 'string', 'max:50'],
@@ -93,6 +94,7 @@ class OrderController extends Controller
             'user_id'               => auth()->id(),
             'lyrics'                => $data['lyrics'],
             'performer_name'        => $data['performer_name'],
+            'song_name'             => $data['song_name'] ?? null,
             'music_style'           => $data['music_style'],
             'plan'                  => $plan,
             'cover_description'     => $data['cover_description'] ?? null,

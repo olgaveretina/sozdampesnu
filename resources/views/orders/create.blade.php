@@ -17,7 +17,7 @@
                     <div class="row g-3 mb-4">
                         @foreach(\App\Models\Order::PLANS as $planId => $plan)
                             <div class="col-md-4">
-                                <label class="card h-100 cursor-pointer border-2 {{ old('plan', request('plan')) == $planId ? 'border-primary' : '' }}" style="cursor:pointer">
+                                <label class="card h-100 cursor-pointer border-2 {{ old('plan', request('plan', 1)) == $planId ? 'border-primary' : '' }}" style="cursor:pointer">
                                     <div class="card-body">
                                         <input type="radio" name="plan" value="{{ $planId }}" class="plan-radio visually-hidden"
                                                {{ old('plan', request('plan', 1)) == $planId ? 'checked' : '' }}>
@@ -47,6 +47,16 @@
                                value="{{ old('performer_name') }}"
                                placeholder="Как будет называться исполнитель?" required>
                         @error('performer_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    {{-- Song name --}}
+                    <div class="mb-3">
+                        <label for="song_name" class="form-label fw-semibold">Название песни <span class="text-danger">*</span></label>
+                        <input type="text" id="song_name" name="song_name"
+                               class="form-control @error('song_name') is-invalid @enderror"
+                               value="{{ old('song_name') }}"
+                               placeholder="Название вашей песни" required>
+                        @error('song_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     {{-- Music style --}}

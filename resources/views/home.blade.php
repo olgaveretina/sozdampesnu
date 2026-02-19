@@ -7,7 +7,7 @@
 {{-- Banner placeholder --}}
 <div class="bg-dark text-white rounded-3 p-5 mb-5 text-center" style="min-height: 280px; display: flex; flex-direction: column; justify-content: center;">
     <h1 class="display-5 fw-bold mb-3">Превращаем ваши стихи в песню</h1>
-    <p class="lead mb-4">Отправьте нам текст — мы создадим музыку с помощью AI и нашей команды.</p>
+    <p class="lead mb-4">Отправьте нам текст — мы создадим музыку с помощью ИИ и нашей команды.</p>
     <div>
         <a href="{{ route('orders.create') }}" class="btn btn-warning btn-lg px-5">Заказать песню</a>
     </div>
@@ -21,11 +21,11 @@
         <div class="card h-100 shadow-sm">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">Просто попробовать</h5>
-                <p class="text-muted small">4 версии песни, сгенерированные Suno AI без нашей доработки</p>
+                <p class="text-muted small">4 версии песни, сгенерированные ИИ, с минимальными доработками от нас</p>
                 <ul class="list-unstyled small mt-2">
-                    <li>✅ 4 варианта от AI</li>
-                    <li>✅ Срок: от 1 часа до 2 дней</li>
-                    <li>📌 Позже можно улучшить</li>
+                    <li>✅ 4 варианта от ИИ</li>
+                    <li>✅ Срок: от 20 минут до 2 дней</li>
+                    <li>📌 Доработка песни за доп.оплату</li>
                 </ul>
                 <div class="mt-auto">
                     <p class="fs-4 fw-bold mb-3">600 ₽</p>
@@ -39,12 +39,14 @@
         <div class="card h-100 shadow-sm border-primary">
             <div class="card-header bg-primary text-white text-center small fw-bold">Популярный выбор</div>
             <div class="card-body d-flex flex-column">
-                <h5 class="card-title">Хочу крутую песню</h5>
+                <h5 class="card-title">Хочу профессиональную песню</h5>
                 <p class="text-muted small">Мы отдельно поработаем над вашей песней и передадим 4 доработанные версии</p>
                 <ul class="list-unstyled small mt-2">
-                    <li>✅ 4 варианта с нашей доработкой</li>
+                    <li>✅ 4 лучших варианта от ИИ с нашей доработкой</li>
                     <li>✅ Срок: от 2 часов до 2 дней</li>
-                    <li>📌 Позже можно опубликовать</li>
+                    <li>✅ Дважды можем внести правки по вашим инструкциям</li>
+                    <li>📌 Больше правок - за доп.оплату</li>
+                    <li>📌 Публикация - за доп.оплату</li>
                 </ul>
                 <div class="mt-auto">
                     <p class="fs-4 fw-bold mb-3">5 000 ₽</p>
@@ -57,13 +59,14 @@
     <div class="col-md-4">
         <div class="card h-100 shadow-sm">
             <div class="card-body d-flex flex-column">
-                <h5 class="card-title">Крутая песня + публикация</h5>
+                <h5 class="card-title">Профессиональная песня + публикация</h5>
                 <p class="text-muted small">Доработаем песню и опубликуем на Яндекс Музыке и других площадках</p>
                 <ul class="list-unstyled small mt-2">
-                    <li>✅ 4 варианта с доработкой</li>
+                    <li>✅ 4 лучших варианта от ИИ с нашей доработкой</li>
+                    <li>✅ Вносим правки по вашим инструкциям</li>
                     <li>✅ Обложка для площадок</li>
-                    <li>✅ Публикация ~10 дней после выбора</li>
-                    <li>✅ Доход от стриминга — ваш</li>
+                    <li>✅ Публикация - около 10 дней после создания песни</li>
+                    <li>✅ Доход от прослушиваний — ваш</li>
                 </ul>
                 <div class="mt-auto">
                     <p class="fs-4 fw-bold mb-3">15 000 ₽</p>

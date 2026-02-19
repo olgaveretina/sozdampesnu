@@ -10,6 +10,7 @@ class Order extends Model
         'user_id',
         'lyrics',
         'performer_name',
+        'song_name',
         'music_style',
         'plan',
         'cover_description',
@@ -43,8 +44,8 @@ class Order extends Model
 
     const PLANS = [
         1 => ['name' => 'Просто попробовать',                           'price' => 600],
-        2 => ['name' => 'Хочу крутую песню',                           'price' => 5000],
-        3 => ['name' => 'Хочу крутую песню и публикацию на площадках', 'price' => 15000],
+        2 => ['name' => 'Хочу профессиональную песню',                           'price' => 5000],
+        3 => ['name' => 'Хочу профессиональную песню и публикацию на площадках', 'price' => 15000],
     ];
 
     public function statusLabel(): string

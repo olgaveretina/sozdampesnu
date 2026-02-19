@@ -19,6 +19,51 @@
             </div>
         </div>
 
+        {{-- Order details --}}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <a class="d-flex justify-content-between align-items-center text-decoration-none text-dark"
+                   data-bs-toggle="collapse" href="#order-details" role="button" aria-expanded="false">
+                    <h6 class="mb-0">Детали заказа</h6>
+                    <span class="text-muted small">показать ▾</span>
+                </a>
+            </div>
+            <div class="collapse" id="order-details">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <p class="text-muted small mb-1">Имя исполнителя</p>
+                        <p class="mb-0">{{ $order->performer_name }}</p>
+                    </div>
+                    @if($order->song_name)
+                        <div class="mb-3">
+                            <p class="text-muted small mb-1">Название песни</p>
+                            <p class="mb-0">{{ $order->song_name }}</p>
+                        </div>
+                    @endif
+                    <div class="mb-3">
+                        <p class="text-muted small mb-1">Стиль музыки</p>
+                        <p class="mb-0">{{ $order->music_style }}</p>
+                    </div>
+                    <div class="mb-0">
+                        <p class="text-muted small mb-1">Текст песни (стихи)</p>
+                        <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; font-size: 0.95rem;">{{ $order->lyrics }}</pre>
+                    </div>
+                    @if($order->cover_description)
+                        <div class="mt-3">
+                            <p class="text-muted small mb-1">Описание обложки</p>
+                            <p class="mb-0">{{ $order->cover_description }}</p>
+                        </div>
+                    @endif
+                    @if($order->cover_image_path)
+                        <div class="mt-3">
+                            <p class="text-muted small mb-1">Загруженная обложка</p>
+                            <img src="{{ Storage::url($order->cover_image_path) }}" class="img-fluid rounded" style="max-height: 200px;" alt="Обложка">
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         {{-- Audio files --}}
         @if($order->audioFiles->isNotEmpty())
             <div class="card shadow-sm mb-4">
