@@ -124,6 +124,9 @@ If the plan is not the highest tier:
 * A payment button to upgrade to the next plan
 * After payment, order status changes to “Sent for revision”
 
+Song edit
+* 400 rub for every edit. The user in a text field could give an instructions. What to change in music, what to change in lyric. Which part of the song regenerate. Post this as extra work with order with prepayment. 
+
 ---
 
 ## Order Statuses
@@ -144,7 +147,7 @@ If the plan is not the highest tier:
 On the order page:
 
 * Full status history with admin comments
-* Separate chat dialog where user can message the administrator
+* Separate chat dialog where user can message the administrator at any time, any order state.
 
 ---
 
@@ -189,4 +192,5 @@ Add `.env` variables for:
 
 * Promo codes (fixed percentage discount)
 * Gift certificates
+* When order is completed, user can send a review.
 
