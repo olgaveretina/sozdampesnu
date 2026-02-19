@@ -97,6 +97,8 @@ class OrderResource extends Resource
                             'status'  => $data['status'],
                             'comment' => $data['comment'] ?? null,
                         ]);
+                        app(\App\Services\TelegramService::class)
+                            ->notifyUserStatusChange($record, $data['status'], $data['comment'] ?? null);
                         Notification::make()->title('Статус обновлён')->success()->send();
                     }),
 

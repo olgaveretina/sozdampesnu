@@ -77,17 +77,23 @@ class PaymentController extends Controller
                 'status' => 'sent_for_revision',
             ]);
             $toPlanName = Order::PLANS[$payable->to_plan]['name'];
+            $comment = "Тариф улучшен до «{$toPlanName}». Отправлен на доработку.";
             $payable->order->statusLogs()->create([
                 'status'  => 'sent_for_revision',
-                'comment' => "Тариф улучшен до «{$toPlanName}». Отправлен на доработку.",
+                'comment' => $comment,
             ]);
+            app(\App\Services\TelegramService::class)
+                ->notifyUserStatusChange($payable->order, 'sent_for_revision', $comment);
         } elseif ($payable instanceof EditRequest) {
             $payable->update(['status' => 'paid']);
             $payable->order->update(['status' => 'sent_for_revision']);
+            $comment = 'Оплачена правка заказа.';
             $payable->order->statusLogs()->create([
                 'status'  => 'sent_for_revision',
-                'comment' => 'Оплачена правка заказа.',
+                'comment' => $comment,
             ]);
+            app(\App\Services\TelegramService::class)
+                ->notifyUserStatusChange($payable->order, 'sent_for_revision', $comment);
         } elseif ($payable instanceof \App\Models\GiftCertificate) {
             // Gift certificate purchased — generate code
             $payable->update([

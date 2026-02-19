@@ -7,6 +7,8 @@ use App\Models\Order;
 
 class OrderService
 {
+    public function __construct(private TelegramService $telegram) {}
+
     public function confirm(Order $order): void
     {
         if ($order->status !== 'pending_payment') {
@@ -33,6 +35,10 @@ class OrderService
                     'used_at'           => now(),
                 ]);
         }
+
+        $order->load('user');
+        $this->telegram->notifyNewOrder($order);
+        $this->telegram->notifyUserStatusChange($order, 'new');
     }
 
     public function cancel(Order $order): void
@@ -47,5 +53,8 @@ class OrderService
             'status'  => 'canceled',
             'comment' => 'Оплата не была завершена.',
         ]);
+
+        $order->load('user');
+        $this->telegram->notifyUserStatusChange($order, 'canceled');
     }
 }

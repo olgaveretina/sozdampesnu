@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,7 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, TelegramService $telegram)
     {
         $data = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
@@ -30,6 +31,8 @@ class RegisterController extends Controller
         ]);
 
         Auth::login($user);
+
+        $telegram->notifyNewUser($user);
 
         return redirect()->route('home');
     }

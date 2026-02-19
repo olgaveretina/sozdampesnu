@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
@@ -26,7 +27,7 @@ class ChatController extends Controller
         );
     }
 
-    public function store(Request $request, Order $order)
+    public function store(Request $request, Order $order, TelegramService $telegram)
     {
         abort_if($order->user_id !== auth()->id(), 403);
 
@@ -40,7 +41,7 @@ class ChatController extends Controller
             'body'     => $data['body'],
         ]);
 
-        // TODO: Phase 6 — Telegram notification
+        $telegram->notifyNewChatMessage($order, $data['body']);
 
         return back()->with('success', 'Сообщение отправлено.');
     }
