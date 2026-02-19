@@ -45,7 +45,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/orders/{order}/upgrade',      [OrderController::class, 'upgrade'])->name('orders.upgrade');
     Route::post('/orders/{order}/edit-request', [OrderController::class, 'requestEdit'])->name('orders.edit-request');
 
+    // Files
+    Route::get('/orders/{order}/files', [OrderController::class, 'files'])->name('orders.files');
+
     // Chat
+    Route::get('/orders/{order}/chat',  [ChatController::class, 'index'])->name('chat.index');
     Route::post('/orders/{order}/chat', [ChatController::class, 'store'])->name('chat.store');
 });
 
@@ -53,9 +57,27 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile',                  [ProfileController::class, 'index'])->name('profile');
     Route::patch('/profile',                [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/email',          [ProfileController::class, 'updateEmail'])->name('profile.email');
     Route::put('/profile/password',         [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/profile/telegram',        [ProfileController::class, 'generateTelegramToken'])->name('profile.telegram.bind');
+    Route::delete('/profile/telegram',      [ProfileController::class, 'unlinkTelegram'])->name('profile.telegram.unlink');
     Route::delete('/profile',               [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// ─── Admin ───────────────────────────────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    Route::delete('/admin/order-files/{file}', function (\App\Models\OrderFile $file) {
+        abort_if(!auth()->user()->is_admin, 403);
+        \Illuminate\Support\Facades\Storage::disk('public')->delete($file->path);
+        $file->delete();
+        return back();
+    })->name('admin.order-files.destroy');
+});
+
+// ─── Telegram bot webhook ────────────────────────────────────────────────────
+Route::post('/webhooks/telegram', [\App\Http\Controllers\TelegramController::class, 'webhook'])
+    ->name('telegram.webhook')
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 // ─── Payments (YooKassa webhook) ─────────────────────────────────────────────
 Route::post('/payments/webhook', [\App\Http\Controllers\PaymentController::class, 'webhook'])

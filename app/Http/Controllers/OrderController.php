@@ -145,6 +145,26 @@ class OrderController extends Controller
         return view('orders.show', compact('order'));
     }
 
+    public function files(Request $request, Order $order)
+    {
+        abort_if($order->user_id !== auth()->id(), 403);
+
+        $after = (int) $request->query('after', 0);
+
+        return response()->json(
+            $order->files()
+                ->where('id', '>', $after)
+                ->orderBy('id')
+                ->get()
+                ->map(fn($f) => [
+                    'id'    => $f->id,
+                    'type'  => $f->type,
+                    'label' => $f->label,
+                    'url'   => \Illuminate\Support\Facades\Storage::url($f->path),
+                ])
+        );
+    }
+
     public function updateComment(Request $request, Order $order)
     {
         abort_if($order->user_id !== auth()->id(), 403);

@@ -42,6 +42,9 @@ class OrderResource extends Resource
                 Forms\Components\Textarea::make('cover_description')->label('Описание обложки')->disabled()->rows(3),
                 Forms\Components\Textarea::make('user_comment')->label('Комментарий пользователя')->disabled()->rows(3),
             ]),
+
+            Forms\Components\View::make('filament.forms.order-files')
+                ->visibleOn('view'),
         ]);
     }
 
@@ -100,27 +103,36 @@ class OrderResource extends Resource
                 Tables\Actions\Action::make('uploadFile')
                     ->label('Загрузить файл')
                     ->icon('heroicon-o-arrow-up-tray')
+                    ->fillForm(fn(Order $record): array => [
+                        'label' => $record->song_name,
+                    ])
                     ->form([
                         Forms\Components\Select::make('type')
                             ->label('Тип файла')
                             ->options(['audio' => 'Аудио', 'cover' => 'Обложка'])
                             ->required(),
                         Forms\Components\TextInput::make('label')
-                            ->label('Название / версия')
-                            ->placeholder('Версия 1'),
+                            ->label('Название'),
                         Forms\Components\FileUpload::make('file')
                             ->label('Файл')
                             ->disk('public')
                             ->directory('order-files')
+                            ->multiple()
                             ->required(),
                     ])
                     ->action(function (Order $record, array $data): void {
-                        $record->files()->create([
-                            'type'  => $data['type'],
-                            'path'  => $data['file'],
-                            'label' => $data['label'] ?? null,
-                        ]);
-                        Notification::make()->title('Файл загружен')->success()->send();
+                        $type = $data['type'];
+                        $existingCount = $type === 'audio'
+                            ? $record->audioFiles()->count()
+                            : $record->coverFiles()->count();
+                        foreach ((array) $data['file'] as $index => $path) {
+                            $record->files()->create([
+                                'type'  => $type,
+                                'path'  => $path,
+                                'label' => ($data['label'] ?? $record->song_name) . ' - версия ' . ($existingCount + $index + 1),
+                            ]);
+                        }
+                        Notification::make()->title('Файлы загружены')->success()->send();
                     }),
 
                 Tables\Actions\ViewAction::make(),
@@ -128,7 +140,7 @@ class OrderResource extends Resource
             ->bulkActions([]);
     }
 
-    public static function getRelationManagers(): array
+    public static function getRelations(): array
     {
         return [
             RelationManagers\ChatMessagesRelationManager::class,

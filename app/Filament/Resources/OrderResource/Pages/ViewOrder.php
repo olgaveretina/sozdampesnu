@@ -38,26 +38,36 @@ class ViewOrder extends ViewRecord
             \Filament\Actions\Action::make('uploadFile')
                 ->label('Загрузить файл')
                 ->icon('heroicon-o-arrow-up-tray')
+                ->fillForm(fn(): array => [
+                    'label' => $this->record->song_name,
+                ])
                 ->form([
                     \Filament\Forms\Components\Select::make('type')
                         ->label('Тип')
                         ->options(['audio' => 'Аудио', 'cover' => 'Обложка'])
                         ->required(),
                     \Filament\Forms\Components\TextInput::make('label')
-                        ->label('Название (версия 1, 2...)'),
+                        ->label('Название'),
                     \Filament\Forms\Components\FileUpload::make('file')
                         ->label('Файл')
                         ->disk('public')
                         ->directory('order-files')
+                        ->multiple()
                         ->required(),
                 ])
                 ->action(function (array $data): void {
-                    $this->record->files()->create([
-                        'type'  => $data['type'],
-                        'path'  => $data['file'],
-                        'label' => $data['label'] ?? null,
-                    ]);
-                    \Filament\Notifications\Notification::make()->title('Файл загружен')->success()->send();
+                    $type = $data['type'];
+                    $existingCount = $type === 'audio'
+                        ? $this->record->audioFiles()->count()
+                        : $this->record->coverFiles()->count();
+                    foreach ((array) $data['file'] as $index => $path) {
+                        $this->record->files()->create([
+                            'type'  => $type,
+                            'path'  => $path,
+                            'label' => ($data['label'] ?? $this->record->song_name) . ' - версия ' . ($existingCount + $index + 1),
+                        ]);
+                    }
+                    \Filament\Notifications\Notification::make()->title('Файлы загружены')->success()->send();
                 }),
         ];
     }

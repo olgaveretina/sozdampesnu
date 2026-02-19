@@ -13,6 +13,11 @@ class ChatMessagesRelationManager extends RelationManager
     protected static string $relationship = 'chatMessages';
     protected static ?string $title = 'Чат с клиентом';
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Form $form): Form
     {
         return $form->schema([

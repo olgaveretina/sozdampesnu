@@ -16,16 +16,28 @@
                     <h5 class="mb-3">Выберите тариф</h5>
                     <div class="row g-3 mb-4">
                         @foreach(\App\Models\Order::PLANS as $planId => $plan)
-                            <div class="col-md-4">
-                                <label class="card h-100 cursor-pointer border-2 {{ old('plan', request('plan', 1)) == $planId ? 'border-primary' : '' }}" style="cursor:pointer">
-                                    <div class="card-body">
-                                        <input type="radio" name="plan" value="{{ $planId }}" class="plan-radio visually-hidden"
-                                               {{ old('plan', request('plan', 1)) == $planId ? 'checked' : '' }}>
-                                        <h6 class="card-title">{{ $plan['name'] }}</h6>
-                                        <p class="fs-5 fw-bold mb-0">{{ number_format($plan['price'], 0, '.', ' ') }} ₽</p>
+                            @if($planId == 3)
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-2 opacity-50" style="cursor:not-allowed">
+                                        <div class="card-header text-white text-center" style="background-color: #6f42c1; font-size:0.75rem; font-weight:600">Скоро в продаже</div>
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ $plan['name'] }}</h6>
+                                            <p class="fs-5 fw-bold mb-0">{{ number_format($plan['price'], 0, '.', ' ') }} ₽</p>
+                                        </div>
                                     </div>
-                                </label>
-                            </div>
+                                </div>
+                            @else
+                                <div class="col-md-4">
+                                    <label class="card h-100 border-2 {{ old('plan', request('plan', 1)) == $planId ? 'border-primary' : '' }}" style="cursor:pointer">
+                                        <div class="card-body">
+                                            <input type="radio" name="plan" value="{{ $planId }}" class="plan-radio visually-hidden"
+                                                   {{ old('plan', request('plan', 1)) == $planId ? 'checked' : '' }}>
+                                            <h6 class="card-title">{{ $plan['name'] }}</h6>
+                                            <p class="fs-5 fw-bold mb-0">{{ number_format($plan['price'], 0, '.', ' ') }} ₽</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            @endif
                         @endforeach
                     </div>
                     @error('plan')<div class="alert alert-danger">{{ $message }}</div>@enderror
@@ -68,8 +80,8 @@
                         @error('music_style')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    {{-- Plan 3 extra fields --}}
-                    <div id="plan3-fields" class="mb-4 {{ old('plan', request('plan', 1)) == 3 ? '' : 'd-none' }}">
+                    {{-- Plan 3 extra fields (hidden — plan 3 not available yet) --}}
+                    <div id="plan3-fields" class="mb-4 d-none">
                         <div class="alert alert-info">
                             <strong>Для публикации на площадках</strong> необходима обложка. Выберите один из вариантов:
                         </div>

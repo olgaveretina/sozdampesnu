@@ -29,15 +29,15 @@
                 </ul>
                 <div class="mt-auto">
                     <p class="fs-4 fw-bold mb-3">600 ₽</p>
-                    <a href="{{ route('orders.create') }}?plan=1" class="btn btn-outline-primary w-100">Выбрать</a>
+                    <a href="{{ route('orders.create') }}?plan=1" class="btn btn-outline-dark w-100">Выбрать</a>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm border-primary">
-            <div class="card-header bg-primary text-white text-center small fw-bold">Популярный выбор</div>
+        <div class="card h-100 shadow-sm border-warning">
+            <div class="card-header bg-warning text-dark text-center small fw-bold">Популярный выбор</div>
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">Хочу профессиональную песню</h5>
                 <p class="text-muted small">Мы отдельно поработаем над вашей песней и передадим 4 доработанные версии</p>
@@ -50,14 +50,15 @@
                 </ul>
                 <div class="mt-auto">
                     <p class="fs-4 fw-bold mb-3">5 000 ₽</p>
-                    <a href="{{ route('orders.create') }}?plan=2" class="btn btn-primary w-100">Выбрать</a>
+                    <a href="{{ route('orders.create') }}?plan=2" class="btn btn-warning w-100">Выбрать</a>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
+        <div class="card h-100 shadow-sm opacity-75">
+            <div class="card-header text-white text-center small fw-bold" style="background-color: #6f42c1;">Скоро в продаже</div>
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">Профессиональная песня + публикация</h5>
                 <p class="text-muted small">Доработаем песню и опубликуем на Яндекс Музыке и других площадках</p>
@@ -70,7 +71,7 @@
                 </ul>
                 <div class="mt-auto">
                     <p class="fs-4 fw-bold mb-3">15 000 ₽</p>
-                    <a href="{{ route('orders.create') }}?plan=3" class="btn btn-outline-primary w-100">Выбрать</a>
+                    <button class="btn w-100" style="border-color: #6f42c1; color: #6f42c1; opacity: 0.65;" disabled>Скоро в продаже</button>
                 </div>
             </div>
         </div>

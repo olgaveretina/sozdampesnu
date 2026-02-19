@@ -24,6 +24,8 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'is_admin',
+        'telegram_chat_id',
+        'telegram_bind_token',
     ];
 
     /**
