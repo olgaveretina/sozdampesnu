@@ -11,20 +11,8 @@
                 <table class="table table-borderless mb-0">
                     <tbody>
                         <tr>
-                            <td class="text-muted fw-semibold" style="width: 40%">Наименование</td>
-                            <td>— (заполнить)</td>
-                        </tr>
-                        <tr>
                             <td class="text-muted fw-semibold">ИНН</td>
-                            <td>— (заполнить)</td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted fw-semibold">ОГРН / ОГРНИП</td>
-                            <td>— (заполнить)</td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted fw-semibold">Email</td>
-                            <td>— (заполнить)</td>
+                            <td>262810880720</td>
                         </tr>
                     </tbody>
                 </table>

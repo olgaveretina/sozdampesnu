@@ -145,6 +145,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
+            RelationManagers\EditRequestsRelationManager::class,
             RelationManagers\ChatMessagesRelationManager::class,
             RelationManagers\StatusLogsRelationManager::class,
         ];

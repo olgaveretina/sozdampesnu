@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GiftCertificate;
+use App\Services\YooKassaService;
 use Illuminate\Http\Request;
 
 class GiftCertificateController extends Controller
@@ -13,12 +15,37 @@ class GiftCertificateController extends Controller
 
     public function store(Request $request)
     {
+        // Resolve amount: preset or custom
+        $amount = $request->input('amount');
+        if ($amount === 'custom') {
+            $amount = $request->input('custom_amount');
+        }
+
+        $request->merge(['amount' => (int) $amount]);
         $request->validate([
             'amount' => ['required', 'integer', 'min:100'],
         ]);
 
-        // TODO: Phase 5 — create payment and generate certificate
+        $amount = (int) $request->input('amount');
 
-        return back()->with('error', 'Оплата будет доступна в ближайшее время.');
+        $cert = GiftCertificate::create([
+            'amount_rub'    => $amount,
+            'is_used'       => false,
+            'buyer_user_id' => auth()->id(),
+        ]);
+
+        $payment = $cert->payment()->create([
+            'amount' => $amount,
+            'status' => 'pending',
+        ]);
+
+        try {
+            $url = app(YooKassaService::class)->createCertificatePayment($payment, $cert);
+            return redirect($url);
+        } catch (\Exception $e) {
+            $payment->delete();
+            $cert->delete();
+            return back()->with('error', 'Ошибка при создании платежа. Попробуйте позже.');
+        }
     }
 }

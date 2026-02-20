@@ -149,20 +149,38 @@ class OrderController extends Controller
     {
         abort_if($order->user_id !== auth()->id(), 403);
 
-        $after = (int) $request->query('after', 0);
+        $files = $order->files()
+            ->orderBy('id')
+            ->get()
+            ->map(fn($f) => [
+                'id'    => $f->id,
+                'type'  => $f->type,
+                'label' => $f->label,
+                'url'   => \Illuminate\Support\Facades\Storage::url($f->path),
+            ]);
 
-        return response()->json(
-            $order->files()
-                ->where('id', '>', $after)
-                ->orderBy('id')
-                ->get()
-                ->map(fn($f) => [
-                    'id'    => $f->id,
-                    'type'  => $f->type,
-                    'label' => $f->label,
-                    'url'   => \Illuminate\Support\Facades\Storage::url($f->path),
-                ])
-        );
+        $canRequestEdit = $order->audioFiles()->exists()
+            && !in_array($order->status, ['pending_payment', 'canceled']);
+
+        $hasAudio = $order->audioFiles()->exists();
+        $canComplete = $hasAudio
+            && !in_array($order->status, ['completed', 'pending_payment', 'canceled']);
+
+        $order->loadMissing('statusLogs');
+        $statusLogs = $order->statusLogs->map(fn($log) => [
+            'id'           => $log->id,
+            'status_label' => $log->statusLabel(),
+            'comment'      => $log->comment,
+            'time'         => $log->created_at->format('d.m.Y H:i'),
+        ]);
+
+        return response()->json([
+            'files'            => $files,
+            'can_request_edit' => $canRequestEdit,
+            'can_complete'     => $canComplete,
+            'status_label'     => $order->statusLabel(),
+            'status_logs'      => $statusLogs,
+        ]);
     }
 
     public function updateComment(Request $request, Order $order)
@@ -240,6 +258,19 @@ class OrderController extends Controller
 
             return back()->with('error', 'Ошибка создания платежа. Попробуйте ещё раз.');
         }
+    }
+
+    public function complete(Request $request, Order $order)
+    {
+        abort_if($order->user_id !== auth()->id(), 403);
+        abort_if(!$order->audioFiles()->exists(), 403);
+        abort_if(in_array($order->status, ['completed', 'pending_payment', 'canceled']), 403);
+
+        $order->update(['status' => 'completed']);
+        $order->statusLogs()->create(['status' => 'completed', 'comment' => null]);
+
+        return redirect()->route('orders.show', $order)
+            ->with('success', 'Заказ завершён! Спасибо, что воспользовались сервисом.');
     }
 
     public function requestEdit(Request $request, Order $order, YooKassaService $yooKassa)

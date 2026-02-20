@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/orders/{order}/review',   [OrderController::class, 'submitReview'])->name('orders.review');
     Route::post('/orders/{order}/upgrade',      [OrderController::class, 'upgrade'])->name('orders.upgrade');
     Route::post('/orders/{order}/edit-request', [OrderController::class, 'requestEdit'])->name('orders.edit-request');
+    Route::post('/orders/{order}/complete',     [OrderController::class, 'complete'])->name('orders.complete');
 
     // Files
     Route::get('/orders/{order}/files', [OrderController::class, 'files'])->name('orders.files');
@@ -85,4 +86,5 @@ Route::post('/payments/webhook', [\App\Http\Controllers\PaymentController::class
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::get('/payments/success', [\App\Http\Controllers\PaymentController::class, 'success'])->name('payments.success');
+Route::get('/payments/success/certificate', [\App\Http\Controllers\PaymentController::class, 'successCertificate'])->name('payments.success.certificate');
 Route::get('/payments/cancel', [\App\Http\Controllers\PaymentController::class, 'cancel'])->name('payments.cancel');

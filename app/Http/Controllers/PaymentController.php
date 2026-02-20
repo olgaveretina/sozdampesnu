@@ -195,6 +195,47 @@ class PaymentController extends Controller
         }
     }
 
+    public function successCertificate(Request $request)
+    {
+        $certId = $request->query('cert');
+
+        if ($certId && auth()->check()) {
+            $cert = \App\Models\GiftCertificate::where('id', $certId)
+                ->where('buyer_user_id', auth()->id())
+                ->with('payment')
+                ->first();
+
+            if ($cert && $cert->payment && $cert->payment->status === 'pending' && $cert->payment->yookassa_id) {
+                try {
+                    $remote    = $this->yooKassa->getPayment($cert->payment->yookassa_id);
+                    $newStatus = $remote->getStatus();
+
+                    if ($newStatus !== $cert->payment->status) {
+                        $cert->payment->update([
+                            'status'        => $newStatus,
+                            'yookassa_data' => $remote->jsonSerialize(),
+                        ]);
+
+                        if ($newStatus === 'succeeded') {
+                            $this->handleSucceeded($cert->payment);
+                            $cert->refresh();
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Certificate success page payment check: ' . $e->getMessage());
+                }
+            }
+
+            if ($cert && $cert->code) {
+                return redirect()->route('certificates.index')
+                    ->with('success', "Оплата прошла! Ваш код сертификата: {$cert->code}");
+            }
+        }
+
+        return redirect()->route('certificates.index')
+            ->with('success', 'Оплата прошла! Код сертификата будет выслан вам в ближайшее время.');
+    }
+
     public function cancel(Request $request)
     {
         $orderId = $request->query('order');

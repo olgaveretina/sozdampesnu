@@ -17,7 +17,7 @@
                         @endif
                         <span class="text-muted small">{{ $order->planLabel() }} · {{ $order->created_at->format('d.m.Y') }}</span>
                     </div>
-                    <span class="badge bg-primary fs-6">{{ $order->statusLabel() }}</span>
+                    <span id="order-status-badge" class="badge bg-primary fs-6">{{ $order->statusLabel() }}</span>
                 </div>
             </div>
         </div>
@@ -131,16 +131,11 @@
 
         {{-- Edit request form: shown only when audio exists and no active revision --}}
         @php
-            $hasActiveEditRequest = $order->editRequests->contains(
-                fn($er) => in_array($er->status, ['pending_payment', 'paid'])
-            );
             $canRequestEdit = $order->audioFiles->isNotEmpty()
-                && !$hasActiveEditRequest
-                && !in_array($order->status, ['sent_for_revision', 'under_revision', 'pending_payment', 'canceled']);
+                && !in_array($order->status, ['pending_payment', 'canceled']);
         @endphp
-        @if($canRequestEdit)
-        <div class="card shadow-sm mb-4">
-            <div class="card-header"><h6 class="mb-0">Заказать правку — 400 ₽</h6></div>
+        <div id="edit-request-block" class="card shadow-sm mb-4"@unless($canRequestEdit) style="display:none"@endunless>
+            <div class="card-header"><h6 class="mb-0">Закажите правку одного из вариантов или опишите новый вариант — 400 ₽</h6></div>
             <div class="card-body">
                 <form action="{{ route('orders.edit-request', $order) }}" method="POST">
                     @csrf
@@ -151,7 +146,6 @@
                 </form>
             </div>
         </div>
-        @endif
 
         {{-- User comment --}}
         <div class="card shadow-sm mb-4">
@@ -200,7 +194,7 @@
         {{-- Status history --}}
         <div class="card shadow-sm mb-4">
             <div class="card-header"><h6 class="mb-0">История статусов</h6></div>
-            <div class="card-body p-0">
+            <div class="card-body p-0" id="status-history-body">
                 @forelse($order->statusLogs as $log)
                     <div class="border-bottom px-3 py-2">
                         <div class="d-flex justify-content-between">
@@ -215,6 +209,19 @@
                     <div class="p-3 text-muted text-center small">История пуста.</div>
                 @endforelse
             </div>
+        </div>
+
+        {{-- Complete order button --}}
+        @php $canComplete = $order->audioFiles->isNotEmpty() && !in_array($order->status, ['completed', 'pending_payment', 'canceled']); @endphp
+        <div id="complete-order-block" class="mb-4"@unless($canComplete) style="display:none"@endunless>
+            <form action="{{ route('orders.complete', $order) }}" method="POST"
+                  onsubmit="return confirm('Подтвердите завершение заказа. После этого заказ будет закрыт.')">
+                @csrf
+                <button type="submit" class="btn btn-success btn-lg w-100 py-3">
+                    Закрыть заказ
+                </button>
+                <p class="text-muted small text-center mt-2 mb-0">После нажатия заказ перейдёт в статус «Завершён»</p>
+            </form>
         </div>
 
         {{-- Chat --}}
@@ -301,7 +308,8 @@
     function poll() {
         fetch(pollUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(function (r) { return r.json(); })
-            .then(function (files) {
+            .then(function (data) {
+                const files    = data.files;
                 const audioBody = document.getElementById('audio-files-body');
                 const coverRow  = document.getElementById('cover-files-row');
 
@@ -341,6 +349,53 @@
                         coverRow.appendChild(renderCover(file));
                     }
                 });
+
+                // Show/hide "Заказать правку" block
+                var editBlock = document.getElementById('edit-request-block');
+                if (editBlock) {
+                    editBlock.style.display = data.can_request_edit ? '' : 'none';
+                }
+
+                // Show/hide "Заказ завершён" button
+                var completeBlock = document.getElementById('complete-order-block');
+                if (completeBlock) {
+                    completeBlock.style.display = data.can_complete ? '' : 'none';
+                }
+
+                // Update status badge
+                var badge = document.getElementById('order-status-badge');
+                if (badge && data.status_label) {
+                    badge.textContent = data.status_label;
+                }
+
+                // Update status history
+                var historyBody = document.getElementById('status-history-body');
+                if (historyBody && data.status_logs) {
+                    var currentIds = new Set();
+                    historyBody.querySelectorAll('[data-log-id]').forEach(function (el) {
+                        currentIds.add(parseInt(el.dataset.logId, 10));
+                    });
+                    var hasNew = data.status_logs.some(function (log) {
+                        return !currentIds.has(log.id);
+                    });
+                    if (hasNew) {
+                        historyBody.innerHTML = '';
+                        data.status_logs.forEach(function (log) {
+                            var div = document.createElement('div');
+                            div.className = 'border-bottom px-3 py-2';
+                            div.dataset.logId = log.id;
+                            var row = '<div class="d-flex justify-content-between">' +
+                                '<span class="badge bg-secondary">' + esc(log.status_label) + '</span>' +
+                                '<small class="text-muted">' + esc(log.time) + '</small>' +
+                                '</div>';
+                            if (log.comment) {
+                                row += '<p class="text-muted small mb-0 mt-1">' + esc(log.comment) + '</p>';
+                            }
+                            div.innerHTML = row;
+                            historyBody.appendChild(div);
+                        });
+                    }
+                }
             })
             .catch(function () {});
     }

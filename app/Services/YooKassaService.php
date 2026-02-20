@@ -91,6 +91,29 @@ class YooKassaService
         return $response->getConfirmation()->getConfirmationUrl();
     }
 
+    public function createCertificatePayment(\App\Models\Payment $payment, \App\Models\GiftCertificate $cert): string
+    {
+        $response = $this->client->createPayment([
+            'amount' => [
+                'value'    => number_format($payment->amount, 2, '.', ''),
+                'currency' => 'RUB',
+            ],
+            'confirmation' => [
+                'type'       => 'redirect',
+                'return_url' => route('payments.success.certificate', ['cert' => $cert->id]),
+            ],
+            'capture'     => true,
+            'description' => "Подарочный сертификат на {$cert->amount_rub} ₽",
+            'metadata'    => [
+                'payment_db_id' => $payment->id,
+            ],
+        ], uniqid('', true));
+
+        $payment->update(['yookassa_id' => $response->getId()]);
+
+        return $response->getConfirmation()->getConfirmationUrl();
+    }
+
     public function getPayment(string $yookassaId): \YooKassa\Model\Payment\PaymentInterface
     {
         return $this->client->getPaymentInfo($yookassaId);
