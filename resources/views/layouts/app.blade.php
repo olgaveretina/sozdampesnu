@@ -27,6 +27,11 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('certificates.*') ? 'active' : '' }}" href="{{ route('certificates.index') }}">Подарочные сертификаты</a>
                 </li>
+                @auth
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}" href="{{ route('profile') }}">Мои заказы</a>
+                </li>
+                @endauth
             </ul>
             <ul class="navbar-nav ms-auto">
                 @auth

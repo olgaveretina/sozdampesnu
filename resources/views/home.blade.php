@@ -18,9 +18,9 @@
 <div class="row g-4 mb-5">
 
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
+        <div class="card h-100 shadow-sm border-warning">
             <div class="card-body d-flex flex-column">
-                <h5 class="card-title">Просто попробовать</h5>
+                <h5 class="card-title">{{ config('plans.1.name') }}</h5>
                 <p class="text-muted small">4 версии песни, сгенерированные ИИ, с минимальными доработками от нас</p>
                 <ul class="list-unstyled small mt-2">
                     <li>✅ 4 варианта от ИИ</li>
@@ -28,8 +28,8 @@
                     <li>📌 Внесение изменений по вашим просьбам за доп.оплату</li>
                 </ul>
                 <div class="mt-auto">
-                    <p class="fs-4 fw-bold mb-3">600 ₽</p>
-                    <a href="{{ route('orders.create') }}?plan=1" class="btn btn-outline-dark w-100">Выбрать</a>
+                    <p class="fs-4 fw-bold mb-3">{{ number_format(config('plans.1.price'), 0, '.', ' ') }} ₽</p>
+                    <a href="{{ route('orders.create') }}?plan=1" class="btn btn-warning w-100">Выбрать</a>
                 </div>
             </div>
         </div>
@@ -37,9 +37,8 @@
 
     <div class="col-md-4">
         <div class="card h-100 shadow-sm border-warning">
-            <div class="card-header bg-warning text-dark text-center small fw-bold">Популярный выбор</div>
             <div class="card-body d-flex flex-column">
-                <h5 class="card-title">Хочу профессиональную песню</h5>
+                <h5 class="card-title">{{ config('plans.2.name') }}</h5>
                 <p class="text-muted small">Мы отдельно поработаем над вашей песней и передадим 4 доработанные версии</p>
                 <ul class="list-unstyled small mt-2">
                     <li>✅ 4 лучших варианта от ИИ с нашей доработкой</li>
@@ -49,7 +48,7 @@
                     <li>📌 Публикация - за доп.оплату</li>
                 </ul>
                 <div class="mt-auto">
-                    <p class="fs-4 fw-bold mb-3">5 000 ₽</p>
+                    <p class="fs-4 fw-bold mb-3">{{ number_format(config('plans.2.price'), 0, '.', ' ') }} ₽</p>
                     <a href="{{ route('orders.create') }}?plan=2" class="btn btn-warning w-100">Выбрать</a>
                 </div>
             </div>
@@ -57,21 +56,21 @@
     </div>
 
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm opacity-75">
-            <div class="card-header text-white text-center small fw-bold" style="background-color: #6f42c1;">Скоро в продаже</div>
+        <div class="card h-100 shadow-sm border-warning">
             <div class="card-body d-flex flex-column">
-                <h5 class="card-title">Проработанная песня + помощь в публикации</h5>
-                <p class="text-muted small">Доработаем песню и опубликуем на Яндекс Музыке и других площадках</p>
+                <h5 class="card-title">{{ config('plans.3.name') }}</h5>
+                <p class="text-muted small">Доработаем песню и поможем опубликовать на Яндекс Музыке и других площадках</p>
                 <ul class="list-unstyled small mt-2">
                     <li>✅ 4 лучших варианта от ИИ с нашей доработкой</li>
                     <li>✅ Вносим правки по вашим инструкциям</li>
                     <li>✅ Обложка для площадок</li>
-                    <li>✅ Публикация - около 10 дней после создания песни</li>
+                    <li>✅ Сопроводим на этапе публикации - поможем на всех шагах</li>
                     <li>✅ Доход от прослушиваний — ваш</li>
+                    <li>📌 Важно - даже если всё сделаем правильно, сервисы музыки могут не пропустить ИИ песню</li>
                 </ul>
                 <div class="mt-auto">
-                    <p class="fs-4 fw-bold mb-3">15 000 ₽</p>
-                    <button class="btn w-100" style="border-color: #6f42c1; color: #6f42c1; opacity: 0.65;" disabled>Скоро в продаже</button>
+                    <p class="fs-4 fw-bold mb-3">{{ number_format(config('plans.3.price'), 0, '.', ' ') }} ₽</p>
+                    <a href="{{ route('orders.create') }}?plan=3" class="btn btn-warning w-100">Выбрать</a>
                 </div>
             </div>
         </div>

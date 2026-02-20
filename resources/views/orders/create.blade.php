@@ -15,7 +15,7 @@
                     {{-- Plan selection --}}
                     <h5 class="mb-3">Выберите тариф</h5>
                     <div class="row g-3 mb-4">
-                        @foreach(\App\Models\Order::PLANS as $planId => $plan)
+                        @foreach(\App\Models\Order::plans() as $planId => $plan)
                             @if($planId == 3)
                                 <div class="col-md-4">
                                     <div class="card h-100 border-2 opacity-50" style="cursor:not-allowed">

@@ -45,7 +45,7 @@ class YooKassaService
 
     public function createUpgradePayment(\App\Models\Payment $payment, \App\Models\Order $order, \App\Models\OrderUpgrade $upgrade): string
     {
-        $toPlan = \App\Models\Order::PLANS[$upgrade->to_plan]['name'];
+        $toPlan = \App\Models\Order::plans()[$upgrade->to_plan]['name'];
 
         $response = $this->client->createPayment([
             'amount' => [

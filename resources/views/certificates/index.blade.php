@@ -21,14 +21,14 @@
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Выберите номинал</label>
                             <div class="row g-3">
-                                @foreach([600 => 'Просто попробовать', 5000 => 'Профессиональная песня', 15000 => 'Проработанная песня + помощь в публикации'] as $price => $label)
+                                @foreach(config('plans') as $plan)
                                     <div class="col-md-4">
-                                        <label class="card h-100 text-center border-2 amount-card {{ old('amount') == $price ? 'border-primary' : '' }}" style="cursor:pointer">
+                                        <label class="card h-100 text-center border-2 amount-card {{ old('amount') == $plan['price'] ? 'border-primary' : '' }}" style="cursor:pointer">
                                             <div class="card-body py-3">
-                                                <input type="radio" name="amount" value="{{ $price }}" class="visually-hidden"
-                                                       {{ old('amount') == $price ? 'checked' : '' }}>
-                                                <div class="fs-5 fw-bold">{{ number_format($price, 0, '.', ' ') }} ₽</div>
-                                                <div class="text-muted small">{{ $label }}</div>
+                                                <input type="radio" name="amount" value="{{ $plan['price'] }}" class="visually-hidden"
+                                                       {{ old('amount') == $plan['price'] ? 'checked' : '' }}>
+                                                <div class="fs-5 fw-bold">{{ number_format($plan['price'], 0, '.', ' ') }} ₽</div>
+                                                <div class="text-muted small">{{ $plan['name'] }}</div>
                                             </div>
                                         </label>
                                     </div>

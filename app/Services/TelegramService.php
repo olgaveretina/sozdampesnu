@@ -31,7 +31,7 @@ class TelegramService
 
     public function notifyNewOrder(Order $order): void
     {
-        $planName  = Order::PLANS[$order->plan]['name'];
+        $planName  = Order::plans()[$order->plan]['name'];
         $amount    = number_format($order->amount_paid, 0, '.', ' ');
         $userName  = $order->user->name;
         $userEmail = $order->user->email;

@@ -44,9 +44,11 @@ payment()  // morphOne Payment
 | Upgrade | Amount |
 |---|---|
 | Plan 1 → Plan 2 | 4 400 ₽ (5000 − 600) |
-| Plan 2 → Plan 3 | 10 000 ₽ (15000 − 5000) |
+| Plan 2 → Plan 3 | 1 500 ₽ (6500 − 5000) |
 
-Calculated dynamically: `Order::PLANS[$toPlan]['price'] - Order::PLANS[$order->plan]['price']`
+Calculated dynamically: `Order::plans()[$toPlan]['price'] - Order::plans()[$order->plan]['price']`
+
+Plan prices are defined in `config/plans.php`.
 
 ## Flow
 ```

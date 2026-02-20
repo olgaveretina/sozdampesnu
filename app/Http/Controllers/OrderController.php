@@ -46,7 +46,7 @@ class OrderController extends Controller
                 ->withInput();
         }
 
-        $basePrice      = Order::PLANS[$plan]['price'];
+        $basePrice      = Order::plans()[$plan]['price'];
         $discountAmount = 0;
         $promoCodeId    = null;
         $giftCertCode   = null;
@@ -215,7 +215,7 @@ class OrderController extends Controller
         abort_if(!in_array($order->status, ['generated', 'completed', 'sent_for_revision', 'new']), 403);
 
         $toPlan = $order->plan + 1;
-        $prices = Order::PLANS;
+        $prices = Order::plans();
         $amount = $prices[$toPlan]['price'] - $prices[$order->plan]['price'];
 
         $upgrade = $order->upgrades()->create([

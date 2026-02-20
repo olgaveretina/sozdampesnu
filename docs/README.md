@@ -52,7 +52,9 @@ pending_payment → new → in_progress → generated
 ### Pricing
 - Plan 1: 600 ₽ (Просто попробовать)
 - Plan 2: 5 000 ₽ (Хочу профессиональную песню)
-- Plan 3: 15 000 ₽ (Хочу профессиональную песню и публикацию)
+- Plan 3: 6 500 ₽ (Проработанная песня + помощь в публикации)
 - Edit request: 400 ₽
 - Plan 1→2 upgrade: 4 400 ₽
-- Plan 2→3 upgrade: 10 000 ₽
+- Plan 2→3 upgrade: 1 500 ₽
+
+> Plan names and prices are configured in `config/plans.php`.

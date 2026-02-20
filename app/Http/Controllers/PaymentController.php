@@ -76,7 +76,7 @@ class PaymentController extends Controller
                 'plan'   => $payable->to_plan,
                 'status' => 'sent_for_revision',
             ]);
-            $toPlanName = Order::PLANS[$payable->to_plan]['name'];
+            $toPlanName = Order::plans()[$payable->to_plan]['name'];
             $comment = "Тариф улучшен до «{$toPlanName}». Отправлен на доработку.";
             $payable->order->statusLogs()->create([
                 'status'  => 'sent_for_revision',

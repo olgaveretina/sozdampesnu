@@ -42,11 +42,10 @@ class Order extends Model
         'completed'              => 'Заказ выполнен',
     ];
 
-    const PLANS = [
-        1 => ['name' => 'Просто попробовать',                           'price' => 600],
-        2 => ['name' => 'Хочу профессиональную песню',                           'price' => 5000],
-        3 => ['name' => 'Хочу профессиональную песню и публикацию на площадках', 'price' => 15000],
-    ];
+    public static function plans(): array
+    {
+        return config('plans');
+    }
 
     public function statusLabel(): string
     {
@@ -55,7 +54,7 @@ class Order extends Model
 
     public function planLabel(): string
     {
-        return self::PLANS[$this->plan]['name'] ?? "План {$this->plan}";
+        return self::plans()[$this->plan]['name'] ?? "План {$this->plan}";
     }
 
     public function user()

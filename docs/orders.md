@@ -47,11 +47,13 @@ Table: `orders`
 
 ## Model: `App\Models\Order`
 
-### Constants
+### Constants & Methods
 ```php
-Order::STATUSES  // array of status => Russian label
-Order::PLANS     // array of plan => ['name' => ..., 'price' => ...]
+Order::STATUSES   // array of status => Russian label
+Order::plans()    // static method — returns config('plans') array: plan => ['name' => ..., 'price' => ...]
 ```
+
+Plan names and prices are defined in `config/plans.php`. Edit that file to change them.
 
 ### Relationships
 ```php
@@ -105,7 +107,7 @@ $order->planLabel()    // returns Russian plan name
 |---|---|---|
 | 1 | Просто попробовать | 600 ₽ |
 | 2 | Хочу профессиональную песню | 5 000 ₽ |
-| 3 | Хочу профессиональную песню и публикацию | 15 000 ₽ |
+| 3 | Проработанная песня + помощь в публикации | 6 500 ₽ |
 
 ## Order Detail Page Features
 - Audio files: HTML5 `<audio>` player per file (if uploaded by admin)
