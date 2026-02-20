@@ -57,16 +57,35 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label for="password_confirmation" class="form-label">Повторите пароль</label>
-                        <input
-                            type="password"
-                            id="password_confirmation"
-                            name="password_confirmation"
-                            class="form-control"
-                            required
-                        >
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input
+                                type="checkbox"
+                                id="agree"
+                                name="agree"
+                                class="form-check-input @error('agree') is-invalid @enderror"
+                                value="1"
+                                {{ old('agree') ? 'checked' : '' }}
+                                required
+                            >
+                            <label class="form-check-label" for="agree">
+                                Я принимаю <a href="{{ route('terms') }}" target="_blank">условия использования</a>
+                                и <a href="{{ route('privacy') }}" target="_blank">политику конфиденциальности</a>
+                            </label>
+                            @error('agree')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
+
+                    @if(config('services.turnstile.site_key'))
+                    <div class="mb-4">
+                        <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key') }}"></div>
+                        @error('cf-turnstile-response')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
 
                     <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
                 </form>
@@ -81,3 +100,7 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+@endpush

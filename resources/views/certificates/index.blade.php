@@ -21,7 +21,7 @@
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Выберите номинал</label>
                             <div class="row g-3">
-                                @foreach([600 => 'Просто попробовать', 5000 => 'Профессиональная песня', 15000 => 'Профессиональная песня + публикация'] as $price => $label)
+                                @foreach([600 => 'Просто попробовать', 5000 => 'Профессиональная песня', 15000 => 'Проработанная песня + помощь в публикации'] as $price => $label)
                                     <div class="col-md-4">
                                         <label class="card h-100 text-center border-2 amount-card {{ old('amount') == $price ? 'border-primary' : '' }}" style="cursor:pointer">
                                             <div class="card-body py-3">

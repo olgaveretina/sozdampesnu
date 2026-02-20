@@ -75,6 +75,20 @@ class TelegramService
         }
     }
 
+    public function notifyNewEditRequest(Order $order, \App\Models\EditRequest $editRequest): void
+    {
+        $songName  = $order->song_name ?? $order->performer_name;
+        $userName  = $order->user->name;
+        $preview   = mb_strimwidth($editRequest->instructions, 0, 300, '…');
+
+        $this->notifyAdmin(
+            "✏️ *Оплачена правка заказа \#{$order->id}*\n" .
+            "Пользователь: {$userName}\n" .
+            "Песня: {$songName}\n\n" .
+            "Инструкция:\n{$preview}"
+        );
+    }
+
     public function notifyNewChatMessage(Order $order, string $body): void
     {
         $userName = $order->user->name;

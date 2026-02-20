@@ -140,7 +140,7 @@ class OrderController extends Controller
     {
         abort_if($order->user_id !== auth()->id(), 403);
 
-        $order->load(['audioFiles', 'coverFiles', 'statusLogs', 'chatMessages.user', 'editRequests', 'review']);
+        $order->load(['audioFiles', 'coverFiles', 'statusLogs', 'chatMessages.user', 'editRequests.payment', 'review']);
 
         return view('orders.show', compact('order'));
     }

@@ -67,6 +67,18 @@
             </div>
         </div>
 
+        {{-- Edit requests history --}}
+        @foreach($order->editRequests->where('status', 'paid') as $editRequest)
+        <div class="card shadow-sm mb-4">
+            <div class="card-header"><h6 class="mb-0">Доработка №{{ $loop->iteration }}</h6></div>
+            <div class="card-body">
+                <p class="text-muted small mb-1">Инструкция</p>
+                <p class="mb-2" style="white-space: pre-wrap;">{{ $editRequest->instructions }}</p>
+                <p class="text-muted small mb-0">{{ $editRequest->created_at->format('d.m.Y H:i') }} · 400 ₽</p>
+            </div>
+        </div>
+        @endforeach
+
         {{-- Audio files --}}
         <div id="audio-section" class="card shadow-sm mb-4"@if($order->audioFiles->isEmpty()) style="display:none"@endif>
             <div class="card-header"><h6 class="mb-0">Версии песни</h6></div>
@@ -117,21 +129,16 @@
             </form>
         @endif
 
-        {{-- User comment --}}
-        <div class="card shadow-sm mb-4">
-            <div class="card-header"><h6 class="mb-0">Ваш комментарий к заказу</h6></div>
-            <div class="card-body">
-                <form action="{{ route('orders.comment', $order) }}" method="POST">
-                    @csrf @method('PATCH')
-                    <textarea name="user_comment" rows="4" class="form-control mb-2"
-                              placeholder="Любые пожелания, уточнения...">{{ old('user_comment', $order->user_comment) }}</textarea>
-                    <button type="submit" class="btn btn-sm btn-outline-secondary">Сохранить</button>
-                </form>
-            </div>
-        </div>
-
-        {{-- Edit request --}}
-        @if($order->audioFiles->isNotEmpty())
+        {{-- Edit request form: shown only when audio exists and no active revision --}}
+        @php
+            $hasActiveEditRequest = $order->editRequests->contains(
+                fn($er) => in_array($er->status, ['pending_payment', 'paid'])
+            );
+            $canRequestEdit = $order->audioFiles->isNotEmpty()
+                && !$hasActiveEditRequest
+                && !in_array($order->status, ['sent_for_revision', 'under_revision', 'pending_payment', 'canceled']);
+        @endphp
+        @if($canRequestEdit)
         <div class="card shadow-sm mb-4">
             <div class="card-header"><h6 class="mb-0">Заказать правку — 400 ₽</h6></div>
             <div class="card-body">
@@ -145,6 +152,19 @@
             </div>
         </div>
         @endif
+
+        {{-- User comment --}}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header"><h6 class="mb-0">Ваш комментарий к заказу</h6></div>
+            <div class="card-body">
+                <form action="{{ route('orders.comment', $order) }}" method="POST">
+                    @csrf @method('PATCH')
+                    <textarea name="user_comment" rows="4" class="form-control mb-2"
+                              placeholder="Любые пожелания, уточнения...">{{ old('user_comment', $order->user_comment) }}</textarea>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Сохранить</button>
+                </form>
+            </div>
+        </div>
 
         {{-- Review --}}
         @if($order->status === 'completed' && !$order->review)

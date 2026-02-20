@@ -25,7 +25,7 @@
                 <ul class="list-unstyled small mt-2">
                     <li>✅ 4 варианта от ИИ</li>
                     <li>✅ Срок: от 20 минут до 2 дней</li>
-                    <li>📌 Доработка песни за доп.оплату</li>
+                    <li>📌 Внесение изменений по вашим просьбам за доп.оплату</li>
                 </ul>
                 <div class="mt-auto">
                     <p class="fs-4 fw-bold mb-3">600 ₽</p>
@@ -60,7 +60,7 @@
         <div class="card h-100 shadow-sm opacity-75">
             <div class="card-header text-white text-center small fw-bold" style="background-color: #6f42c1;">Скоро в продаже</div>
             <div class="card-body d-flex flex-column">
-                <h5 class="card-title">Профессиональная песня + публикация</h5>
+                <h5 class="card-title">Проработанная песня + помощь в публикации</h5>
                 <p class="text-muted small">Доработаем песню и опубликуем на Яндекс Музыке и других площадках</p>
                 <ul class="list-unstyled small mt-2">
                     <li>✅ 4 лучших варианта от ИИ с нашей доработкой</li>

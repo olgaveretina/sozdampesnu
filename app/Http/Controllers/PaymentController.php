@@ -92,8 +92,9 @@ class PaymentController extends Controller
                 'status'  => 'sent_for_revision',
                 'comment' => $comment,
             ]);
-            app(\App\Services\TelegramService::class)
-                ->notifyUserStatusChange($payable->order, 'sent_for_revision', $comment);
+            $telegram = app(\App\Services\TelegramService::class);
+            $telegram->notifyUserStatusChange($payable->order, 'sent_for_revision', $comment);
+            $telegram->notifyNewEditRequest($payable->order, $payable);
         } elseif ($payable instanceof \App\Models\GiftCertificate) {
             // Gift certificate purchased — generate code
             $payable->update([
@@ -125,6 +126,9 @@ class PaymentController extends Controller
                 ->first();
 
             if ($order) {
+                // Proactively verify any pending payments in case webhook hasn't fired yet
+                $this->processPendingPayments($order);
+
                 return redirect()
                     ->route('orders.show', $order)
                     ->with('success', 'Оплата прошла! Мы получили ваш заказ и приступим к работе.');
@@ -133,6 +137,62 @@ class PaymentController extends Controller
 
         return redirect()->route('profile')
             ->with('success', 'Оплата прошла успешно!');
+    }
+
+    /**
+     * Proactively pull payment status from YooKassa for all pending payments
+     * linked to this order. Handles the case where the webhook hasn't arrived yet
+     * (e.g. localhost dev environment).
+     */
+    private function processPendingPayments(Order $order): void
+    {
+        $order->loadMissing(['payment', 'editRequests.payment', 'upgrades.payment']);
+
+        $candidates = collect();
+
+        if ($order->payment && $order->payment->status === 'pending') {
+            $candidates->push($order->payment);
+        }
+
+        foreach ($order->editRequests as $er) {
+            if ($er->payment && $er->payment->status === 'pending') {
+                $candidates->push($er->payment);
+            }
+        }
+
+        foreach ($order->upgrades as $upgrade) {
+            if ($upgrade->payment && $upgrade->payment->status === 'pending') {
+                $candidates->push($upgrade->payment);
+            }
+        }
+
+        foreach ($candidates as $payment) {
+            if (!$payment->yookassa_id) {
+                continue;
+            }
+
+            try {
+                $remote    = $this->yooKassa->getPayment($payment->yookassa_id);
+                $newStatus = $remote->getStatus();
+
+                if ($newStatus === $payment->status) {
+                    continue;
+                }
+
+                $payment->update([
+                    'status'        => $newStatus,
+                    'yookassa_data' => $remote->jsonSerialize(),
+                ]);
+
+                if ($newStatus === 'succeeded') {
+                    $this->handleSucceeded($payment);
+                } elseif ($newStatus === 'canceled') {
+                    $this->handleCanceled($payment);
+                }
+            } catch (\Exception $e) {
+                Log::warning('Success page payment check error: ' . $e->getMessage());
+            }
+        }
     }
 
     public function cancel(Request $request)

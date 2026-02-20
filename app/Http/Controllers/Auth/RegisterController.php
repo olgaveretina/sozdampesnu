@@ -8,6 +8,8 @@ use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
@@ -21,8 +23,23 @@ class RegisterController extends Controller
         $data = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8'],
+            'agree'    => ['accepted'],
         ]);
+
+        if (config('services.turnstile.secret_key')) {
+            $turnstileResponse = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+                'secret'   => config('services.turnstile.secret_key'),
+                'response' => $request->input('cf-turnstile-response'),
+                'remoteip' => $request->ip(),
+            ]);
+
+            if (! ($turnstileResponse->json('success') ?? false)) {
+                throw ValidationException::withMessages([
+                    'cf-turnstile-response' => 'Пожалуйста, подтвердите, что вы не робот.',
+                ]);
+            }
+        }
 
         $user = User::create([
             'name'     => $data['name'],
