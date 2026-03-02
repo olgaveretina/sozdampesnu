@@ -5,7 +5,7 @@
 @section('content')
 
 {{-- Banner placeholder --}}
-<div class="bg-dark text-white rounded-3 p-5 mb-5 text-center" style="min-height: 280px; display: flex; flex-direction: column; justify-content: center;">
+<div class="text-white rounded-3 p-5 mb-5 text-center" style="min-height: 280px; display: flex; flex-direction: column; justify-content: center; background-color:#1f2337;">
     <h1 class="display-5 fw-bold mb-3">Превращаем ваши стихи в песню</h1>
     <p class="lead mb-4">Отправьте нам текст — мы создадим музыку с помощью ИИ и нашей команды.</p>
     <div>
