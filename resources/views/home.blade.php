@@ -103,4 +103,15 @@
     </div>
 </div>
 
+{{-- Refund guarantee --}}
+<div class="rounded-3 p-5 mb-5 text-center" style="background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%); border: 2px solid #ffc107;">
+    <div class="fs-1 mb-3">🛡️</div>
+    <h3 class="fw-bold mb-2">Гарантия возврата</h3>
+    <p class="text-muted mb-0" style="max-width: 620px; margin: 0 auto;">
+        В редких случаях мы можем отказаться от выполнения заказа.
+        Мы объясним причину в комментарии к заказу
+        и <strong>вернём полную стоимость</strong>.
+    </p>
+</div>
+
 @endsection

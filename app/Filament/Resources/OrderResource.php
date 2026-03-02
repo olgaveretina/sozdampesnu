@@ -107,7 +107,7 @@ class OrderResource extends Resource
                         'warning' => fn($state) => in_array($state, ['new', 'sent_for_revision']),
                         'primary' => fn($state) => in_array($state, ['in_progress', 'under_revision']),
                         'success' => fn($state) => in_array($state, ['generated', 'completed']),
-                        'danger'  => fn($state) => in_array($state, ['rejected_by_distributor', 'rejected_by_platforms']),
+                        'danger'  => fn($state) => in_array($state, ['rejected_by_distributor', 'rejected_by_platforms', 'rejected']),
                         'info'    => fn($state) => in_array($state, ['publication_queue', 'publishing', 'sent_to_distributor', 'approved_by_distributor']),
                     ]),
                 Tables\Columns\TextColumn::make('amount_paid')->label('Сумма')->suffix(' ₽')->sortable(),
@@ -180,6 +180,48 @@ class OrderResource extends Resource
                         }
                         Notification::make()->title('Файлы загружены')->success()->send();
                     }),
+
+                Tables\Actions\Action::make('rejectOrder')
+                    ->label('Отклонить заказ')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->modalHeading('Отклонить заказ и вернуть деньги')
+                    ->modalDescription('Заказ будет переведён в статус «Не сможем выполнить». Если оплата была получена — будет инициирован возврат полной суммы.')
+                    ->modalSubmitActionLabel('Отклонить и вернуть деньги')
+                    ->form([
+                        Forms\Components\Textarea::make('comment')
+                            ->label('Комментарий для клиента')
+                            ->required()
+                            ->rows(4)
+                            ->placeholder('Объясните причину отказа...'),
+                    ])
+                    ->action(function (Order $record, array $data): void {
+                        $payment = $record->payment;
+                        if ($payment && $payment->yookassa_id && $payment->status === 'succeeded' && $record->amount_paid > 0) {
+                            try {
+                                app(\App\Services\YooKassaService::class)->createRefund(
+                                    $payment->yookassa_id,
+                                    $record->amount_paid,
+                                    'Возврат по заказу #' . $record->id . ': ' . $data['comment']
+                                );
+                                $payment->update(['status' => 'refunded']);
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Ошибка возврата через ЮKassa')
+                                    ->body($e->getMessage())
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+                        }
+                        $record->update(['status' => 'rejected']);
+                        $record->statusLogs()->create([
+                            'status'  => 'rejected',
+                            'comment' => $data['comment'],
+                        ]);
+                        Notification::make()->title('Заказ отклонён, возврат инициирован')->success()->send();
+                    })
+                    ->hidden(fn(Order $record) => in_array($record->status, ['rejected', 'canceled', 'pending_payment', 'completed'])),
 
                 Tables\Actions\ViewAction::make(),
             ])

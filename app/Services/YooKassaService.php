@@ -114,6 +114,18 @@ class YooKassaService
         return $response->getConfirmation()->getConfirmationUrl();
     }
 
+    public function createRefund(string $yookassaPaymentId, int $amountRub, string $description = ''): void
+    {
+        $this->client->createRefund([
+            'amount' => [
+                'value'    => number_format($amountRub, 2, '.', ''),
+                'currency' => 'RUB',
+            ],
+            'payment_id'  => $yookassaPaymentId,
+            'description' => $description ?: 'Возврат средств',
+        ], uniqid('', true));
+    }
+
     public function getPayment(string $yookassaId): \YooKassa\Model\Payment\PaymentInterface
     {
         return $this->client->getPaymentInfo($yookassaId);

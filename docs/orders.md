@@ -115,6 +115,7 @@ $order->typeLabel()    // returns Russian type label ('Песня' or 'Виде�
 | rejected_by_distributor | Отклонён дистрибьютором | |
 | rejected_by_platforms | Отклонён площадками | |
 | completed | Заказ выполнен | Final state |
+| rejected | Не сможем выполнить | Admin-initiated refusal with full refund |
 
 ## Pricing Plans
 | Plan | Russian Name | Price | Type |
@@ -133,6 +134,24 @@ $order->typeLabel()    // returns Russian type label ('Песня' or 'Виде�
 - Chat: message thread, user can send messages at any time
 - Edit request form: 400 ₽, textarea for instructions
 - Review form: shown only when status = completed and no review yet
+
+## Admin Order Rejection
+
+Admin can reject any active order via the **"Отклонить заказ"** action (available in both the orders list and the order view page).
+
+**Flow:**
+1. Admin clicks "Отклонить заказ", enters a required comment (reason for rejection)
+2. If the order has a succeeded YooKassa payment (`payment.status = succeeded`, `amount_paid > 0`):
+   - `YooKassaService::createRefund()` is called — full refund of `amount_paid`
+   - `payment.status` is set to `refunded`
+   - If the refund API call fails, an error is shown and the order is **not** rejected (no partial state)
+3. If `amount_paid = 0` (fully covered by promo/certificate) — no refund call, just rejection
+4. Order status → `rejected` ("Не сможем выполнить")
+5. Status log entry created with the admin comment (visible to the customer)
+
+**Button is hidden** for orders in: `rejected`, `canceled`, `pending_payment`, `completed`.
+
+A note about this policy is shown on the landing page (`home.blade.php`) at the bottom.
 
 ## Authorization
 All order actions check `$order->user_id === auth()->id()` — returns 403 otherwise.

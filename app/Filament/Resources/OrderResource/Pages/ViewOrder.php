@@ -35,6 +35,49 @@ class ViewOrder extends ViewRecord
                     $this->refreshFormData(['status']);
                 }),
 
+            \Filament\Actions\Action::make('rejectOrder')
+                ->label('Отклонить заказ')
+                ->icon('heroicon-o-x-circle')
+                ->color('danger')
+                ->modalHeading('Отклонить заказ и вернуть деньги')
+                ->modalDescription('Заказ будет переведён в статус «Не сможем выполнить». Если оплата была получена — будет инициирован возврат полной суммы.')
+                ->modalSubmitActionLabel('Отклонить и вернуть деньги')
+                ->form([
+                    \Filament\Forms\Components\Textarea::make('comment')
+                        ->label('Комментарий для клиента')
+                        ->required()
+                        ->rows(4)
+                        ->placeholder('Объясните причину отказа...'),
+                ])
+                ->action(function (array $data): void {
+                    $payment = $this->record->payment;
+                    if ($payment && $payment->yookassa_id && $payment->status === 'succeeded' && $this->record->amount_paid > 0) {
+                        try {
+                            app(\App\Services\YooKassaService::class)->createRefund(
+                                $payment->yookassa_id,
+                                $this->record->amount_paid,
+                                'Возврат по заказу #' . $this->record->id . ': ' . $data['comment']
+                            );
+                            $payment->update(['status' => 'refunded']);
+                        } catch (\Exception $e) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Ошибка возврата через ЮKassa')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                            return;
+                        }
+                    }
+                    $this->record->update(['status' => 'rejected']);
+                    $this->record->statusLogs()->create([
+                        'status'  => 'rejected',
+                        'comment' => $data['comment'],
+                    ]);
+                    \Filament\Notifications\Notification::make()->title('Заказ отклонён, возврат инициирован')->success()->send();
+                    $this->refreshFormData(['status']);
+                })
+                ->hidden(fn() => in_array($this->record->status, ['rejected', 'canceled', 'pending_payment', 'completed'])),
+
             \Filament\Actions\Action::make('uploadFile')
                 ->label('Загрузить файл')
                 ->icon('heroicon-o-arrow-up-tray')

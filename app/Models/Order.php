@@ -50,6 +50,7 @@ class Order extends Model
         'rejected_by_distributor'=> 'Отклонён дистрибьютором',
         'rejected_by_platforms'  => 'Отклонён площадками',
         'completed'              => 'Заказ выполнен',
+        'rejected'               => 'Не сможем выполнить',
     ];
 
     public static function plans(): array
