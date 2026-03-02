@@ -13,8 +13,12 @@ class Order extends Model
         'song_name',
         'music_style',
         'plan',
+        'order_type',
         'cover_description',
         'cover_image_path',
+        'video_audio_path',
+        'video_images',
+        'singer_description',
         'status',
         'promo_code_id',
         'gift_certificate_code',
@@ -24,6 +28,12 @@ class Order extends Model
         'selected_audio_id',
         'selected_cover_id',
     ];
+
+    protected $casts = [
+        'video_images' => 'array',
+    ];
+
+    const TYPES = ['song' => 'Песня', 'video' => 'Видеоклип'];
 
     const STATUSES = [
         'pending_payment'        => 'Ожидает оплаты',
@@ -50,6 +60,11 @@ class Order extends Model
     public function statusLabel(): string
     {
         return self::STATUSES[$this->status] ?? $this->status;
+    }
+
+    public function typeLabel(): string
+    {
+        return self::TYPES[$this->order_type] ?? $this->order_type;
     }
 
     public function planLabel(): string

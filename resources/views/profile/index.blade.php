@@ -19,6 +19,7 @@
                             <div>
                                 <strong>{{ $order->song_name ?? $order->performer_name }}</strong>
                                 <span class="text-muted ms-2 small">{{ $order->performer_name }} · {{ $order->planLabel() }}</span>
+                                <span class="badge bg-info text-dark ms-1">{{ $order->typeLabel() }}</span>
                             </div>
                             <span class="badge bg-secondary">{{ $order->statusLabel() }}</span>
                         </div>

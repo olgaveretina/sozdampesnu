@@ -15,7 +15,9 @@
                         @if($order->song_name)
                             <p class="mb-1 text-secondary">«{{ $order->song_name }}»</p>
                         @endif
-                        <span class="text-muted small">{{ $order->planLabel() }} · {{ $order->created_at->format('d.m.Y') }}</span>
+                        <span class="text-muted small">{{ $order->planLabel() }} ·
+                            <span class="badge bg-info text-dark">{{ $order->typeLabel() }}</span>
+                            · {{ $order->created_at->format('d.m.Y') }}</span>
                     </div>
                     <span id="order-status-badge" class="badge bg-primary fs-6">{{ $order->statusLabel() }}</span>
                 </div>
@@ -39,29 +41,64 @@
                     </div>
                     @if($order->song_name)
                         <div class="mb-3">
-                            <p class="text-muted small mb-1">Название песни</p>
+                            <p class="text-muted small mb-1">Название</p>
                             <p class="mb-0">{{ $order->song_name }}</p>
                         </div>
                     @endif
-                    <div class="mb-3">
-                        <p class="text-muted small mb-1">Стиль музыки</p>
-                        <p class="mb-0">{{ $order->music_style }}</p>
-                    </div>
-                    <div class="mb-0">
-                        <p class="text-muted small mb-1">Текст песни (стихи)</p>
-                        <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; font-size: 0.95rem;">{{ $order->lyrics }}</pre>
-                    </div>
-                    @if($order->cover_description)
-                        <div class="mt-3">
-                            <p class="text-muted small mb-1">Описание обложки</p>
-                            <p class="mb-0">{{ $order->cover_description }}</p>
+
+                    @if($order->order_type === 'video')
+                        {{-- Video order fields --}}
+                        @if($order->singer_description)
+                            <div class="mb-3">
+                                <p class="text-muted small mb-1">Описание исполнителя / персонажа</p>
+                                <p class="mb-0" style="white-space: pre-wrap;">{{ $order->singer_description }}</p>
+                            </div>
+                        @endif
+                        @if($order->cover_description)
+                            <div class="mb-3">
+                                <p class="text-muted small mb-1">Описание видеоклипа</p>
+                                <p class="mb-0" style="white-space: pre-wrap;">{{ $order->cover_description }}</p>
+                            </div>
+                        @endif
+                        @if($order->video_audio_path)
+                            <div class="mb-3">
+                                <p class="text-muted small mb-1">Загруженное аудио</p>
+                                <audio controls class="w-100">
+                                    <source src="{{ Storage::url($order->video_audio_path) }}" type="audio/mpeg">
+                                    Ваш браузер не поддерживает аудио.
+                                </audio>
+                            </div>
+                        @endif
+                        @if(!empty($order->video_images))
+                            <div class="mb-0">
+                                <p class="text-muted small mb-1">Фото исполнителя / сцены ({{ count($order->video_images) }})</p>
+                                <div class="row g-2">
+                                    @foreach($order->video_images as $imgPath)
+                                        <div class="col-6 col-md-4">
+                                            <a href="{{ Storage::url($imgPath) }}" target="_blank">
+                                                <img src="{{ Storage::url($imgPath) }}" class="img-fluid rounded" style="height:120px;width:100%;object-fit:cover;" alt="Фото">
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    @else
+                        {{-- Song order fields --}}
+                        <div class="mb-3">
+                            <p class="text-muted small mb-1">Стиль музыки</p>
+                            <p class="mb-0">{{ $order->music_style }}</p>
                         </div>
-                    @endif
-                    @if($order->cover_image_path)
-                        <div class="mt-3">
-                            <p class="text-muted small mb-1">Загруженная обложка</p>
-                            <img src="{{ Storage::url($order->cover_image_path) }}" class="img-fluid rounded" style="max-height: 200px;" alt="Обложка">
+                        <div class="mb-0">
+                            <p class="text-muted small mb-1">Текст песни (стихи)</p>
+                            <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; font-size: 0.95rem;">{{ $order->lyrics }}</pre>
                         </div>
+                        @if($order->cover_image_path)
+                            <div class="mt-3">
+                                <p class="text-muted small mb-1">Загруженная обложка</p>
+                                <img src="{{ Storage::url($order->cover_image_path) }}" class="img-fluid rounded" style="max-height: 200px;" alt="Обложка">
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>

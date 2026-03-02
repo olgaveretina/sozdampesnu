@@ -42,7 +42,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/orders/{order}/comment', [OrderController::class, 'updateComment'])->name('orders.comment');
     Route::post('/orders/{order}/select',   [OrderController::class, 'selectVersion'])->name('orders.select');
     Route::post('/orders/{order}/review',   [OrderController::class, 'submitReview'])->name('orders.review');
-    Route::post('/orders/{order}/upgrade',      [OrderController::class, 'upgrade'])->name('orders.upgrade');
     Route::post('/orders/{order}/edit-request', [OrderController::class, 'requestEdit'])->name('orders.edit-request');
     Route::post('/orders/{order}/complete',     [OrderController::class, 'complete'])->name('orders.complete');
 

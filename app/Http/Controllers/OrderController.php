@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\GiftCertificate;
 use App\Models\Order;
-use App\Models\OrderUpgrade;
 use App\Models\PromoCode;
 use App\Services\OrderService;
 use App\Services\YooKassaService;
@@ -19,39 +18,40 @@ class OrderController extends Controller
 
     public function store(Request $request, OrderService $orderService, YooKassaService $yooKassa)
     {
-        $plan = (int) $request->input('plan');
+        $plan      = (int) $request->input('plan');
+        $isVideo   = $plan === 3;
+        $orderType = $isVideo ? 'video' : 'song';
 
-        $rules = [
-            'lyrics'                  => ['required', 'string', 'max:10000'],
-            'performer_name'          => ['required', 'string', 'max:255'],
-            'song_name'               => ['required', 'string', 'max:255'],
-            'music_style'             => ['required', 'string', 'max:2000'],
-            'plan'                    => ['required', 'in:1,2,3'],
-            'promo_code'              => ['nullable', 'string', 'max:50'],
-            'gift_certificate_code'   => ['nullable', 'string', 'max:50'],
-            'disclaimer'              => ['accepted'],
+        $commonRules = [
+            'performer_name'        => ['required', 'string', 'max:255'],
+            'song_name'             => ['required', 'string', 'max:255'],
+            'plan'                  => ['required', 'in:1,2,3'],
+            'promo_code'            => ['nullable', 'string', 'max:50'],
+            'gift_certificate_code' => ['nullable', 'string', 'max:50'],
+            'disclaimer'            => ['accepted'],
         ];
 
-        if ($plan === 3) {
-            $rules['cover_description'] = ['nullable', 'string', 'max:2000'];
-            $rules['cover_image']       = ['nullable', 'image', 'mimes:jpeg,png', 'max:20480'];
+        if ($isVideo) {
+            $rules = array_merge($commonRules, [
+                'singer_description'  => ['required', 'string', 'max:3000'],
+                'cover_description'   => ['required', 'string', 'max:2000'],
+                'video_audio'         => ['required', 'file', 'mimes:mpga,mp3,m4a,wav', 'max:51200'],
+                'video_images'        => ['nullable', 'array', 'max:6'],
+                'video_images.*'      => ['image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
+            ]);
+        } else {
+            $rules = array_merge($commonRules, [
+                'lyrics'      => ['required', 'string', 'max:10000'],
+                'music_style' => ['required', 'string', 'max:2000'],
+            ]);
         }
 
         $data = $request->validate($rules);
-
-        // Plan 3 requires at least one cover option
-        if ($plan === 3 && empty($data['cover_description']) && !$request->hasFile('cover_image')) {
-            return back()
-                ->withErrors(['cover_description' => 'Для тарифа с публикацией необходимо описание обложки или файл.'])
-                ->withInput();
-        }
 
         $basePrice      = Order::plans()[$plan]['price'];
         $discountAmount = 0;
         $promoCodeId    = null;
         $giftCertCode   = null;
-        $promoCode      = null;
-        $giftCert       = null;
 
         // Validate and apply promo code
         if (!empty($data['promo_code'])) {
@@ -83,22 +83,34 @@ class OrderController extends Controller
 
         $finalAmount = max(0, $basePrice - $discountAmount);
 
-        // Store cover image if uploaded
-        $coverImagePath = null;
-        if ($request->hasFile('cover_image')) {
-            $coverImagePath = $request->file('cover_image')->store('covers', 'public');
+        // Store video audio if uploaded
+        $videoAudioPath = null;
+        if ($isVideo && $request->hasFile('video_audio')) {
+            $videoAudioPath = $request->file('video_audio')->store('video-audio', 'public');
+        }
+
+        // Store video images (up to 6)
+        $videoImagePaths = null;
+        if ($isVideo && $request->hasFile('video_images')) {
+            $videoImagePaths = [];
+            foreach ($request->file('video_images') as $image) {
+                $videoImagePaths[] = $image->store('video-images', 'public');
+            }
         }
 
         // Create order (pending_payment until confirmed)
         $order = Order::create([
             'user_id'               => auth()->id(),
-            'lyrics'                => $data['lyrics'],
+            'order_type'            => $orderType,
+            'lyrics'                => $isVideo ? null : ($data['lyrics'] ?? null),
             'performer_name'        => $data['performer_name'],
             'song_name'             => $data['song_name'] ?? null,
-            'music_style'           => $data['music_style'],
+            'music_style'           => $isVideo ? null : ($data['music_style'] ?? null),
             'plan'                  => $plan,
             'cover_description'     => $data['cover_description'] ?? null,
-            'cover_image_path'      => $coverImagePath,
+            'singer_description'    => $data['singer_description'] ?? null,
+            'video_audio_path'      => $videoAudioPath,
+            'video_images'          => $videoImagePaths,
             'status'                => 'pending_payment',
             'promo_code_id'         => $promoCodeId,
             'gift_certificate_code' => $giftCertCode,
@@ -224,40 +236,6 @@ class OrderController extends Controller
         ]);
 
         return back()->with('success', 'Отзыв отправлен. Спасибо!');
-    }
-
-    public function upgrade(Request $request, Order $order, YooKassaService $yooKassa)
-    {
-        abort_if($order->user_id !== auth()->id(), 403);
-        abort_if($order->plan >= 3, 403);
-        abort_if(!in_array($order->status, ['generated', 'completed', 'sent_for_revision', 'new']), 403);
-
-        $toPlan = $order->plan + 1;
-        $prices = Order::plans();
-        $amount = $prices[$toPlan]['price'] - $prices[$order->plan]['price'];
-
-        $upgrade = $order->upgrades()->create([
-            'from_plan' => $order->plan,
-            'to_plan'   => $toPlan,
-            'amount'    => $amount,
-            'status'    => 'pending_payment',
-        ]);
-
-        $payment = $upgrade->payment()->create([
-            'amount' => $amount,
-            'status' => 'pending',
-        ]);
-
-        try {
-            $confirmationUrl = $yooKassa->createUpgradePayment($payment, $order, $upgrade);
-            return redirect($confirmationUrl);
-        } catch (\Exception $e) {
-            $payment->delete();
-            $upgrade->delete();
-            report($e);
-
-            return back()->with('error', 'Ошибка создания платежа. Попробуйте ещё раз.');
-        }
     }
 
     public function complete(Request $request, Order $order)

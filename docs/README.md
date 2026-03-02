@@ -25,6 +25,7 @@ Use these files as context when working on specific features.
 | [contact-form.md](contact-form.md) | Contact form, delivery (TODO Phase 6) |
 | [static-pages.md](static-pages.md) | Home, Privacy, Terms, INN pages |
 | [layout-and-frontend.md](layout-and-frontend.md) | Bootstrap layout, Blade conventions, flash messages |
+| [local-development.md](local-development.md) | How to start, stop, and run the local site with Sail |
 
 ## Quick Reference
 
