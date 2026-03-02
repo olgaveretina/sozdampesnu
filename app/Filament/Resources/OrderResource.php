@@ -28,19 +28,58 @@ class OrderResource extends Resource
         return $form->schema([
             Forms\Components\Section::make('Детали заказа')->schema([
                 Forms\Components\TextInput::make('performer_name')->label('Исполнитель')->disabled(),
-                Forms\Components\TextInput::make('song_name')->label('Название песни')->disabled(),
+                Forms\Components\TextInput::make('song_name')->label('Название')->disabled(),
                 Forms\Components\Select::make('plan')->label('Тариф')
                     ->options(collect(Order::plans())->map(fn($p) => $p['name']))->disabled(),
+                Forms\Components\TextInput::make('order_type')->label('Тип заказа')
+                    ->formatStateUsing(fn($state) => Order::TYPES[$state] ?? $state)->disabled(),
                 Forms\Components\Select::make('status')->label('Статус')
                     ->options(Order::STATUSES)->disabled(),
                 Forms\Components\TextInput::make('amount_paid')->label('Оплачено (₽)')->disabled(),
             ])->columns(2),
 
+            // Song-only fields (plans 1 & 2)
             Forms\Components\Section::make('Текст и пожелания')->schema([
-                Forms\Components\Textarea::make('lyrics')->label('Текст песни')->disabled()->rows(8),
+                Forms\Components\Textarea::make('lyrics')->label('Текст песни')->disabled()->rows(8)->columnSpanFull(),
                 Forms\Components\Textarea::make('music_style')->label('Стиль музыки')->disabled()->rows(3),
-                Forms\Components\Textarea::make('cover_description')->label('Описание обложки')->disabled()->rows(3),
-                Forms\Components\Textarea::make('user_comment')->label('Комментарий пользователя')->disabled()->rows(3),
+            ])->visible(fn($livewire) => ($livewire->record?->order_type ?? 'song') !== 'video'),
+
+            // Video-only fields (plan 3)
+            Forms\Components\Section::make('Материалы видеоклипа')->schema([
+                Forms\Components\Textarea::make('singer_description')
+                    ->label('Описание исполнителя / персонажа')->disabled()->rows(3),
+                Forms\Components\Textarea::make('cover_description')
+                    ->label('Описание видеоклипа')->disabled()->rows(4)->columnSpanFull(),
+                Forms\Components\Placeholder::make('video_audio_link')
+                    ->label('Аудио файл')
+                    ->content(fn($livewire) => $livewire->record?->video_audio_path
+                        ? new \Illuminate\Support\HtmlString(
+                            '<a href="' . Storage::url($livewire->record->video_audio_path) . '" target="_blank" class="text-primary-600 underline">Открыть / скачать</a>'
+                        )
+                        : new \Illuminate\Support\HtmlString('<span class="text-gray-400">Не загружено</span>')
+                    ),
+                Forms\Components\Placeholder::make('video_images_display')
+                    ->label('Фото исполнителя / сцены')
+                    ->content(function ($livewire) {
+                        $images = $livewire->record?->video_images ?? [];
+                        if (empty($images)) {
+                            return new \Illuminate\Support\HtmlString('<span class="text-gray-400">Не загружено</span>');
+                        }
+                        $html = '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">';
+                        foreach ($images as $path) {
+                            $url = Storage::url($path);
+                            $html .= '<a href="' . $url . '" target="_blank">'
+                                . '<img src="' . $url . '" style="height:100px;width:100px;object-fit:cover;border-radius:6px;" alt="Фото">'
+                                . '</a>';
+                        }
+                        $html .= '</div>';
+                        return new \Illuminate\Support\HtmlString($html);
+                    })->columnSpanFull(),
+            ])->visible(fn($livewire) => $livewire->record?->order_type === 'video'),
+
+            // Shared
+            Forms\Components\Section::make('Комментарий клиента')->schema([
+                Forms\Components\Textarea::make('user_comment')->label('Комментарий')->disabled()->rows(3)->columnSpanFull(),
             ]),
 
             Forms\Components\View::make('filament.forms.order-files')
@@ -53,11 +92,14 @@ class OrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->label('#')->sortable(),
-                Tables\Columns\TextColumn::make('song_name')->label('Название песни')->searchable(),
+                Tables\Columns\TextColumn::make('song_name')->label('Название')->searchable(),
                 Tables\Columns\TextColumn::make('performer_name')->label('Исполнитель')->searchable(),
                 Tables\Columns\TextColumn::make('user.name')->label('Клиент')->searchable(),
                 Tables\Columns\TextColumn::make('plan')->label('Тариф')
                     ->formatStateUsing(fn($state) => Order::plans()[$state]['name'] ?? $state),
+                Tables\Columns\BadgeColumn::make('order_type')->label('Тип')
+                    ->formatStateUsing(fn($state) => Order::TYPES[$state] ?? $state)
+                    ->colors(['primary' => 'song', 'warning' => 'video']),
                 Tables\Columns\BadgeColumn::make('status')->label('Статус')
                     ->formatStateUsing(fn($state) => Order::STATUSES[$state] ?? $state)
                     ->colors([
@@ -73,6 +115,8 @@ class OrderResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
+                Tables\Filters\SelectFilter::make('order_type')->label('Тип')
+                    ->options(Order::TYPES),
                 Tables\Filters\SelectFilter::make('status')->label('Статус')
                     ->options(Order::STATUSES),
                 Tables\Filters\SelectFilter::make('plan')->label('Тариф')

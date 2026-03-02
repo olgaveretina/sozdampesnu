@@ -21,8 +21,8 @@ Toggle admin status via UserResource action in the panel itself.
 File: `app/Filament/Resources/OrderResource.php`
 
 **List page** (`ListOrders`):
-- Columns: #, performer name, client name, plan, status (colored badge), amount paid, date
-- Filters: status (select), plan (select)
+- Columns: #, name, performer, client, plan, **type badge** (Песня/Видеоклип), status (colored badge), amount paid, date
+- Filters: **type** (song/video), status (select), plan (select)
 - Default sort: created_at desc
 - Row actions:
   - **Change Status** — modal with status select + optional comment → updates order + creates status log
@@ -30,7 +30,10 @@ File: `app/Filament/Resources/OrderResource.php`
   - **View** → goes to ViewOrder page
 
 **View page** (`ViewOrder`):
-- Shows order form fields (read-only)
+- Shows order form fields (read-only), always: performer, name, plan, **order type**, status, amount paid
+- **Song orders** (plans 1–2): section "Текст и пожелания" — lyrics, music style
+- **Video orders** (plan 3): section "Материалы видеоклипа" — singer/character description, video description, audio file link, image thumbnails (clickable)
+- Shared: "Комментарий клиента" section
 - Header actions: Change Status, Upload File (same as list row actions)
 - Relation managers (tabs):
   - **Chat** (`ChatMessagesRelationManager`) — view all messages, reply as admin
