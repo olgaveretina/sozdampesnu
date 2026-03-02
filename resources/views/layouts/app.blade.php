@@ -26,6 +26,9 @@
                     <a class="nav-link {{ request()->routeIs('orders.create') ? 'active' : '' }}" href="{{ route('orders.create') }}">Заказать песню</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('songs') ? 'active' : '' }}" href="{{ route('songs') }}">Наши песни</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('certificates.*') ? 'active' : '' }}" href="{{ route('certificates.index') }}">Подарочные сертификаты</a>
                 </li>
                 @auth

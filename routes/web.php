@@ -24,6 +24,7 @@ Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')-
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/songs',   fn() => view('pages.songs'))->name('songs');
 Route::get('/privacy', fn() => view('pages.privacy'))->name('privacy');
 Route::get('/terms',   fn() => view('pages.terms'))->name('terms');
 Route::get('/inn',     fn() => view('pages.inn'))->name('inn');
