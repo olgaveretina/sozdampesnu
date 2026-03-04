@@ -89,6 +89,19 @@
                             <p class="text-muted small mb-1">Стиль музыки</p>
                             <p class="mb-0">{{ $order->music_style }}</p>
                         </div>
+                        @if($order->lyrics_edit_permission)
+                            @php
+                                $lyricsPermissionLabels = [
+                                    'none'  => 'Ничего менять нельзя',
+                                    'minor' => 'Только незначительные изменения',
+                                    'any'   => 'Любые изменения на наше усмотрение',
+                                ];
+                            @endphp
+                            <div class="mb-3">
+                                <p class="text-muted small mb-1">Изменение текста</p>
+                                <p class="mb-0">{{ $lyricsPermissionLabels[$order->lyrics_edit_permission] ?? $order->lyrics_edit_permission }}</p>
+                            </div>
+                        @endif
                         <div class="mb-0">
                             <p class="text-muted small mb-1">Текст песни (стихи)</p>
                             <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit; font-size: 0.95rem;">{{ $order->lyrics }}</pre>

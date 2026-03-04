@@ -9,6 +9,7 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'lyrics',
+        'lyrics_edit_permission',
         'performer_name',
         'song_name',
         'music_style',

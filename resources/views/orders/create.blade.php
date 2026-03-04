@@ -59,12 +59,25 @@
                             @error('lyrics')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <label for="music_style" class="form-label fw-semibold">Описание стиля музыки <span class="text-danger">*</span></label>
                             <textarea id="music_style" name="music_style" rows="3"
                                       class="form-control @error('music_style') is-invalid @enderror"
                                       placeholder="Например: рок-баллада в стиле 80-х, грустная мелодия с пианино, быстрый поп с гитарой...">{{ old('music_style') }}</textarea>
                             @error('music_style')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Можем ли мы менять текст для лучшего звучания песни? <span class="text-danger">*</span></label>
+                            @foreach(['none' => 'Ничего менять нельзя', 'minor' => 'Только незначительные изменения', 'any' => 'Любые изменения на наше усмотрение'] as $value => $label)
+                                <div class="form-check">
+                                    <input type="radio" id="lyrics_edit_{{ $value }}" name="lyrics_edit_permission" value="{{ $value }}"
+                                           class="form-check-input @error('lyrics_edit_permission') is-invalid @enderror"
+                                           {{ old('lyrics_edit_permission') === $value ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="lyrics_edit_{{ $value }}">{{ $label }}</label>
+                                </div>
+                            @endforeach
+                            @error('lyrics_edit_permission')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                         </div>
                     </div>
 
@@ -134,7 +147,7 @@
                     </div>
 
                     {{-- Disclaimer --}}
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <div class="form-check">
                             <input type="checkbox" id="disclaimer" name="disclaimer" value="1"
                                    class="form-check-input @error('disclaimer') is-invalid @enderror"
@@ -143,6 +156,18 @@
                                 Я подтверждаю, что предоставляю материалы на законных основаниях и несу ответственность за их правомерное использование.
                             </label>
                             @error('disclaimer')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" id="accept_terms" name="accept_terms" value="1"
+                                   class="form-check-input @error('accept_terms') is-invalid @enderror"
+                                   {{ old('accept_terms') ? 'checked' : '' }} required>
+                            <label class="form-check-label" for="accept_terms">
+                                Я принимаю <a href="{{ route('terms') }}" target="_blank">пользовательское соглашение</a>.
+                            </label>
+                            @error('accept_terms')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
 

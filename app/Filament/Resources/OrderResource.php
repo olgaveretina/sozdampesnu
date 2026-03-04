@@ -42,6 +42,15 @@ class OrderResource extends Resource
             Forms\Components\Section::make('Текст и пожелания')->schema([
                 Forms\Components\Textarea::make('lyrics')->label('Текст песни')->disabled()->rows(8)->columnSpanFull(),
                 Forms\Components\Textarea::make('music_style')->label('Стиль музыки')->disabled()->rows(3),
+                Forms\Components\TextInput::make('lyrics_edit_permission')
+                    ->label('Изменение текста')
+                    ->disabled()
+                    ->formatStateUsing(fn($state) => match($state) {
+                        'none'  => 'Ничего менять нельзя',
+                        'minor' => 'Только незначительные изменения',
+                        'any'   => 'Любые изменения на наше усмотрение',
+                        default => $state,
+                    }),
             ])->visible(fn($livewire) => ($livewire->record?->order_type ?? 'song') !== 'video'),
 
             // Video-only fields (plan 3)

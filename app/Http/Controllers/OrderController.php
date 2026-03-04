@@ -28,7 +28,9 @@ class OrderController extends Controller
             'plan'                  => ['required', 'in:1,2,3'],
             'promo_code'            => ['nullable', 'string', 'max:50'],
             'gift_certificate_code' => ['nullable', 'string', 'max:50'],
+            'lyrics_edit_permission' => ['nullable', 'in:none,minor,any'],
             'disclaimer'            => ['accepted'],
+            'accept_terms'          => ['accepted'],
         ];
 
         if ($isVideo) {
@@ -102,7 +104,8 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id'               => auth()->id(),
             'order_type'            => $orderType,
-            'lyrics'                => $isVideo ? null : ($data['lyrics'] ?? null),
+            'lyrics'                    => $isVideo ? null : ($data['lyrics'] ?? null),
+            'lyrics_edit_permission'    => $isVideo ? null : ($data['lyrics_edit_permission'] ?? null),
             'performer_name'        => $data['performer_name'],
             'song_name'             => $data['song_name'] ?? null,
             'music_style'           => $isVideo ? null : ($data['music_style'] ?? null),
