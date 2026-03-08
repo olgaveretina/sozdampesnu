@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Наши песни — примеры работ')
+@section('meta_description', 'Послушайте примеры песен, созданных нашей командой из стихов реальных клиентов. Убедитесь в качестве перед заказом.')
+@section('canonical', route('songs'))
 
 @section('content')
 <div class="row justify-content-center">

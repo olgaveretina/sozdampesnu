@@ -3,7 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Создаём песни')</title>
+
+    @php
+        $pageTitle = trim(view()->yieldContent('title'));
+        $siteName = 'Создаём песни';
+        $fullTitle = trim(view()->yieldContent('full_title')) ?: ($pageTitle ? $pageTitle . ' — ' . $siteName : $siteName);
+        $metaDesc = trim(view()->yieldContent('meta_description') ?: 'Превращаем ваши стихи в профессиональную песню с помощью ИИ и нашей команды. Заказать песню онлайн от 600 ₽.');
+        $canonicalUrl = trim(view()->yieldContent('canonical') ?: url()->current());
+    @endphp
+
+    <title>{{ $fullTitle }}</title>
+    <meta name="description" content="{{ $metaDesc }}">
+    <meta name="robots" content="@yield('robots', 'index, follow')">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+
+    {{-- Open Graph --}}
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:title" content="{{ $fullTitle }}">
+    <meta property="og:description" content="{{ $metaDesc }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:locale" content="ru_RU">
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ $fullTitle }}">
+    <meta name="twitter:description" content="{{ $metaDesc }}">
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">

@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Заказать')
+@section('title', 'Заказать песню')
+@section('meta_description', 'Оформите заказ на создание песни из ваших стихов. Выберите тариф, укажите пожелания и оплатите онлайн.')
+@section('canonical', route('orders.create'))
 
 @section('content')
 <div class="row justify-content-center">

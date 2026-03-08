@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Создаём песни из ваших стихов')
+@section('full_title', 'Создаём песни — Превращаем ваши стихи в музыку')
+@section('meta_description', 'Превращаем ваши стихи в профессиональную песню с помощью ИИ и нашей команды. Выбирайте тариф от 600 ₽ и заказывайте онлайн.')
+@section('canonical', url('/'))
 
 @section('content')
 

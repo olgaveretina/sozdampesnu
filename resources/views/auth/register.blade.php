@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Регистрация')
+@section('robots', 'noindex, follow')
+@section('canonical', route('register'))
 
 @section('content')
 <div class="row justify-content-center">

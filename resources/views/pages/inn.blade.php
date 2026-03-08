@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Реквизиты')
+@section('canonical', route('inn'))
 
 @section('content')
 <div class="row justify-content-center">

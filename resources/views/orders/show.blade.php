@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Заказ — ' . $order->performer_name)
+@section('robots', 'noindex, nofollow')
+@section('canonical', route('orders.show', $order))
 
 @section('content')
 <div class="row g-4">

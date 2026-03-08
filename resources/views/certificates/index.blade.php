@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Подарочные сертификаты')
+@section('meta_description', 'Подарите близкому человеку песню из его стихов. Подарочные сертификаты на заказ песни от 600 ₽. Действуют 1 год.')
+@section('canonical', route('certificates.index'))
 
 @section('content')
 <div class="row justify-content-center">

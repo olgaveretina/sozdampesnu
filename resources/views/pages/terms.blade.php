@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Пользовательское соглашение')
+@section('canonical', route('terms'))
 
 @section('content')
 <div class="row justify-content-center">

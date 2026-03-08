@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Личный кабинет')
+@section('robots', 'noindex, nofollow')
+@section('canonical', route('profile'))
 
 @section('content')
 <div class="row g-4">

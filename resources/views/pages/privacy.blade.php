@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Политика конфиденциальности')
+@section('canonical', route('privacy'))
 
 @section('content')
 <div class="row justify-content-center">
