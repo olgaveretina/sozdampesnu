@@ -167,7 +167,7 @@
                                    class="form-check-input @error('accept_terms') is-invalid @enderror"
                                    {{ old('accept_terms') ? 'checked' : '' }} required>
                             <label class="form-check-label" for="accept_terms">
-                                Я принимаю <a href="{{ route('terms') }}" target="_blank">пользовательское соглашение</a>.
+                                Я принимаю <a href="#" data-bs-toggle="modal" data-bs-target="#modalTerms">пользовательское соглашение</a>.
                             </label>
                             @error('accept_terms')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>

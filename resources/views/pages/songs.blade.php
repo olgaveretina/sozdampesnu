@@ -17,13 +17,14 @@
 
             @php
             $songs = [
-                ['title' => 'Провалы в сон',       'file' => 'Провалы в сон.mp3'],
-                ['title' => 'Микст — это любовь',  'file' => 'Микст - это любовь.mp3'],
-                ['title' => 'Худее точка ру',       'file' => 'Худее точка ру.mp3'],
-                ['title' => 'Хочу в кабак',         'file' => 'Хочу в кабак.mp3'],
-                ['title' => 'Девчонка у сетки',     'file' => 'Девчонка у сетки.mp3'],
-                ['title' => 'Звёзды-беглянки',      'file' => 'Звёзды-беглянки.mp3'],
-                ['title' => 'Она со мной',           'file' => 'Она со мной.mp3'],
+                ['title' => 'Дождалась, домечталась я',  'file' => 'Дождалась, домечталась я.mp3',  'artist' => 'Виктория'],
+                ['title' => 'Она со мной',               'file' => 'Она со мной.mp3',               'artist' => 'Виктория'],
+                ['title' => 'Звёзды-беглянки',           'file' => 'Звёзды-беглянки.mp3',           'artist' => 'Астра'],
+                ['title' => 'Девчонка у сетки',          'file' => 'Девчонка у сетки.mp3',          'artist' => 'Tennis Girl'],
+                ['title' => 'Хочу в кабак',              'file' => 'Хочу в кабак.mp3',              'artist' => 'Вера'],
+                ['title' => 'Худее точка ру',            'file' => 'Худее точка ру.mp3',            'artist' => 'Настюха'],
+                ['title' => 'Микст — это любовь',       'file' => 'Микст - это любовь.mp3',       'artist' => 'Tennis Girl'],
+                ['title' => 'Провалы в сон',            'file' => 'Провалы в сон.mp3',            'artist' => 'Астрал'],
             ];
             @endphp
 
@@ -38,7 +39,7 @@
                             </div>
                             <div>
                                 <h5 class="mb-0 fw-semibold">{{ $song['title'] }}</h5>
-                                <small class="text-secondary">Пример работы</small>
+                                <small class="text-secondary">{{ $song['artist'] }}</small>
                             </div>
                         </div>
                         <audio controls class="w-100 mt-auto" preload="none"

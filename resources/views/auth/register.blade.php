@@ -71,8 +71,8 @@
                                 required
                             >
                             <label class="form-check-label" for="agree">
-                                Я принимаю <a href="{{ route('terms') }}" target="_blank">условия использования</a>
-                                и <a href="{{ route('privacy') }}" target="_blank">политику конфиденциальности</a>
+                                Я принимаю <a href="#" data-bs-toggle="modal" data-bs-target="#modalTerms">условия использования</a>
+                                и <a href="#" data-bs-toggle="modal" data-bs-target="#modalPrivacy">политику конфиденциальности</a>
                             </label>
                             @error('agree')
                                 <div class="invalid-feedback">{{ $message }}</div>
