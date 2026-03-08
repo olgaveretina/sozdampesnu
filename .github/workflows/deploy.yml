@@ -1,0 +1,106 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: Zero-downtime deploy to production
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            umask 002
+
+            # ── Variables ──────────────────────────────────────────────
+            BASE_DIR="/var/www/aipesni"
+            RELEASES_DIR="$BASE_DIR/releases"
+            SHARED_DIR="$BASE_DIR/shared"
+            CURRENT_LINK="$BASE_DIR/current"
+            TIMESTAMP=$(date +%Y%m%d%H%M%S)
+            RELEASE_DIR="$RELEASES_DIR/$TIMESTAMP"
+            REPO="git@github.com:${{ github.repository }}.git"
+            KEEP_RELEASES=5
+
+            echo "==> Starting deploy: $TIMESTAMP"
+
+            # ── 1. Ensure base directories exist ───────────────────────
+            mkdir -p "$RELEASES_DIR"
+            mkdir -p "$SHARED_DIR/storage/app/public"
+            mkdir -p "$SHARED_DIR/storage/framework/cache/data"
+            mkdir -p "$SHARED_DIR/storage/framework/sessions"
+            mkdir -p "$SHARED_DIR/storage/framework/views"
+            mkdir -p "$SHARED_DIR/storage/logs"
+            chmod -R 775 "$SHARED_DIR/storage"
+            find "$SHARED_DIR/storage" -type d -exec chmod g+s {} \;
+
+            # ── 2. Clone repository into new release directory ─────────
+            echo "==> Cloning $REPO"
+            git clone --depth 1 --branch master "$REPO" "$RELEASE_DIR"
+
+            # ── 3. Link shared storage ─────────────────────────────────
+            rm -rf "$RELEASE_DIR/storage"
+            ln -sfn "$SHARED_DIR/storage" "$RELEASE_DIR/storage"
+
+            # ── 4. Link shared .env ────────────────────────────────────
+            ln -sfn "$SHARED_DIR/.env" "$RELEASE_DIR/.env"
+
+            # ── 5. Composer install ────────────────────────────────────
+            echo "==> composer install"
+            cd "$RELEASE_DIR"
+            composer install \
+              --no-dev \
+              --optimize-autoloader \
+              --no-interaction \
+              --prefer-dist \
+              --quiet
+
+            # ── 6. Node / Vite build ───────────────────────────────────
+            echo "==> npm ci && npm run build"
+            npm ci --prefer-offline
+            npm run build
+
+            # ── 7. Set permissions before going live ───────────────────
+            chown -R deploy:www-data "$RELEASE_DIR"
+            find "$RELEASE_DIR" -type d -exec chmod 775 {} \;
+            find "$RELEASE_DIR" -type f -exec chmod 664 {} \;
+            chmod +x "$RELEASE_DIR/artisan"
+
+            # ── 8. Artisan migrate ─────────────────────────────────────
+            echo "==> php artisan migrate --force"
+            php "$RELEASE_DIR/artisan" migrate --force
+
+            # ── 9. Artisan optimize ────────────────────────────────────
+            echo "==> php artisan optimize"
+            php "$RELEASE_DIR/artisan" optimize
+
+            # ── 10. Public storage symlink ─────────────────────────────
+            ln -sfn "$SHARED_DIR/storage/app/public" "$RELEASE_DIR/public/storage"
+
+            # ── 11. Atomic symlink swap ────────────────────────────────
+            echo "==> Activating release $TIMESTAMP"
+            ln -sfn "$RELEASE_DIR" "$BASE_DIR/current_new"
+            mv -fT "$BASE_DIR/current_new" "$CURRENT_LINK"
+
+            # ── 12. Reload services ────────────────────────────────────
+            echo "==> Reloading services"
+            sudo supervisorctl restart all 2>/dev/null || true
+            sudo systemctl reload php8.4-fpm 2>/dev/null || \
+              sudo systemctl reload php8.3-fpm 2>/dev/null || true
+
+            # ── 13. Prune old releases (keep last N) ───────────────────
+            echo "==> Pruning old releases (keeping $KEEP_RELEASES)"
+            ls -1dt "$RELEASES_DIR"/*/ | tail -n +$((KEEP_RELEASES + 1)) | xargs rm -rf --
+
+            echo "==> Deploy complete: $TIMESTAMP"
