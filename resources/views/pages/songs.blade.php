@@ -10,7 +10,7 @@
 
         <div class="mb-4">
             <h1 class="fw-bold">Наши песни</h1>
-            <p class="text-secondary fs-5">Послушайте примеры работ, которые мы создали для наших клиентов.</p>
+            <p class="text-secondary fs-5">Послушайте примеры работ, которые мы создали.</p>
         </div>
 
         <div class="row g-4">
