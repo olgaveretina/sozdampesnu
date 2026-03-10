@@ -18,6 +18,7 @@
                     <h5 class="mb-3">Выберите тариф</h5>
                     <div class="row g-3 mb-4">
                         @foreach(\App\Models\Order::plans() as $planId => $plan)
+                            @if(empty($plan['disabled']))
                             <div class="col-md-4">
                                 <label class="card h-100 border-2 {{ old('plan', request('plan', 1)) == $planId ? 'border-primary' : '' }}" style="cursor:pointer">
                                     <div class="card-body">
@@ -28,6 +29,7 @@
                                     </div>
                                 </label>
                             </div>
+                            @endif
                         @endforeach
                     </div>
                     @error('plan')<div class="alert alert-danger">{{ $message }}</div>@enderror

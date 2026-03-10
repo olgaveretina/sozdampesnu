@@ -13,6 +13,14 @@ class GiftCertificateController extends Controller
         return view('certificates.index');
     }
 
+    public function show(\App\Models\GiftCertificate $cert)
+    {
+        abort_if($cert->buyer_user_id !== auth()->id(), 403);
+        abort_unless($cert->code, 404);
+
+        return view('certificates.show', compact('cert'));
+    }
+
     public function store(Request $request)
     {
         // Resolve amount: preset or custom

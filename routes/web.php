@@ -41,6 +41,7 @@ Route::get('/inn',     fn() => view('pages.inn'))->name('inn');
 Route::get('/certificates', [GiftCertificateController::class, 'index'])->name('certificates.index');
 Route::middleware('auth')->group(function () {
     Route::post('/certificates', [GiftCertificateController::class, 'store'])->name('certificates.store');
+    Route::get('/certificates/{cert}', [GiftCertificateController::class, 'show'])->name('certificates.show');
 });
 
 // ─── Orders ──────────────────────────────────────────────────────────────────

@@ -19,7 +19,7 @@
 <h2 class="text-center mb-4">Тарифы</h2>
 <div class="row g-4 mb-5">
 
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="card h-100 shadow-sm border-warning">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ config('plans.1.name') }}</h5>
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="card h-100 shadow-sm border-warning">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ config('plans.2.name') }}</h5>
@@ -56,6 +56,7 @@
         </div>
     </div>
 
+    @if(!config('plans.3.disabled'))
     <div class="col-md-4">
         <div class="card h-100 shadow-sm border-warning">
             <div class="card-body d-flex flex-column">
@@ -75,6 +76,7 @@
             </div>
         </div>
     </div>
+    @endif
 
 </div>
 

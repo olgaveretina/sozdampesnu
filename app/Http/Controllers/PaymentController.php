@@ -227,8 +227,7 @@ class PaymentController extends Controller
             }
 
             if ($cert && $cert->code) {
-                return redirect()->route('certificates.index')
-                    ->with('success', "Оплата прошла! Ваш код сертификата: {$cert->code}");
+                return redirect()->route('certificates.show', $cert);
             }
         }
 

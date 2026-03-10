@@ -24,7 +24,8 @@
                             <label class="form-label fw-semibold">Выберите номинал</label>
                             <div class="row g-3">
                                 @foreach(config('plans') as $plan)
-                                    <div class="col-md-4">
+                                @if(empty($plan['disabled']))
+                                    <div class="col-md-6">
                                         <label class="card h-100 text-center border-2 amount-card {{ old('amount') == $plan['price'] ? 'border-primary' : '' }}" style="cursor:pointer">
                                             <div class="card-body py-3">
                                                 <input type="radio" name="amount" value="{{ $plan['price'] }}" class="visually-hidden"
@@ -34,19 +35,20 @@
                                             </div>
                                         </label>
                                     </div>
+                                @endif
                                 @endforeach
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <div class="form-check">
-                                <input type="radio" name="amount" id="custom-amount-toggle" class="form-check-input" value="custom">
-                                <label class="form-check-label" for="custom-amount-toggle">Другой номинал</label>
-                            </div>
-                            <div class="mt-2 d-none" id="custom-amount-field">
-                                <input type="number" name="custom_amount" class="form-control" placeholder="Сумма в рублях" min="100">
-                            </div>
-                        </div>
+{{--                        <div class="mb-4">--}}
+{{--                            <div class="form-check">--}}
+{{--                                <input type="radio" name="amount" id="custom-amount-toggle" class="form-check-input" value="custom">--}}
+{{--                                <label class="form-check-label" for="custom-amount-toggle">Другой номинал - можно использовать на несколько песен и на доработки</label>--}}
+{{--                            </div>--}}
+{{--                            <div class="mt-2 d-none" id="custom-amount-field">--}}
+{{--                                <input type="number" name="custom_amount" class="form-control" placeholder="Сумма в рублях" min="100">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
                         @error('amount')<div class="alert alert-danger">{{ $message }}</div>@enderror
 
