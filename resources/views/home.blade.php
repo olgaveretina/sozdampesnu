@@ -8,26 +8,26 @@
 @push('scripts')
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
+  "@@context": "https://schema.org",
+  "@@type": "WebSite",
   "name": "Создаём песни",
   "url": "{{ url('/') }}",
   "description": "Превращаем ваши стихи в профессиональную песню с помощью искусственного интеллекта. Создание песен онлайн от 600 ₽.",
   "potentialAction": {
-    "@type": "OrderAction",
+    "@@type": "OrderAction",
     "target": "{{ route('orders.create') }}"
   }
 }
 </script>
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "Service",
+  "@@context": "https://schema.org",
+  "@@type": "Service",
   "name": "Создание песен из стихов с помощью ИИ",
   "url": "{{ url('/') }}",
   "description": "Сервис по созданию профессиональных песен на основе ваших стихов и текстов с применением технологий искусственного интеллекта.",
   "provider": {
-    "@type": "Organization",
+    "@@type": "Organization",
     "name": "Создаём песни",
     "url": "{{ url('/') }}"
   },
@@ -35,14 +35,14 @@
   "inLanguage": "ru",
   "offers": [
     {
-      "@type": "Offer",
+      "@@type": "Offer",
       "name": "Просто попробовать",
       "price": "600",
       "priceCurrency": "RUB",
       "description": "4 варианта песни, сгенерированных ИИ"
     },
     {
-      "@type": "Offer",
+      "@@type": "Offer",
       "name": "Хочу профессиональную песню",
       "price": "5000",
       "priceCurrency": "RUB",

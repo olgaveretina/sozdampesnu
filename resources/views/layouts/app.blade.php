@@ -10,12 +10,13 @@
         $fullTitle = trim(view()->yieldContent('full_title')) ?: ($pageTitle ? $pageTitle . ' — ' . $siteName : $siteName);
         $metaDesc = trim(view()->yieldContent('meta_description') ?: 'Превращаем ваши стихи в профессиональную песню с помощью ИИ и нашей команды. Заказать песню онлайн от 600 ₽.');
         $canonicalUrl = trim(view()->yieldContent('canonical') ?: url()->current());
+        $keywords = trim(view()->yieldContent('keywords'));
     @endphp
 
     <title>{{ $fullTitle }}</title>
     <meta name="description" content="{{ $metaDesc }}">
-    @hasSection('keywords')
-    <meta name="keywords" content="@yield('keywords')">
+    @if($keywords)
+    <meta name="keywords" content="{{ $keywords }}">
     @endif
     <meta name="robots" content="@yield('robots', 'index, follow')">
     <link rel="canonical" href="{{ $canonicalUrl }}">
