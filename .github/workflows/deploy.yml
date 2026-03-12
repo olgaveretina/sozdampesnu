@@ -68,7 +68,7 @@ jobs:
 
             # ── 6. Node / Vite build ───────────────────────────────────
             echo "==> npm ci && npm run build"
-            npm ci --prefer-offline
+            npm install
             npm run build
 
             # ── 7. Set permissions before going live ───────────────────
