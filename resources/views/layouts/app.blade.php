@@ -14,6 +14,9 @@
 
     <title>{{ $fullTitle }}</title>
     <meta name="description" content="{{ $metaDesc }}">
+    @hasSection('keywords')
+    <meta name="keywords" content="@yield('keywords')">
+    @endif
     <meta name="robots" content="@yield('robots', 'index, follow')">
     <link rel="canonical" href="{{ $canonicalUrl }}">
 
@@ -31,6 +34,10 @@
     <meta name="twitter:description" content="{{ $metaDesc }}">
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" type="image/png" href="/favicon-192.png" sizes="192x192">
+    <meta name="theme-color" content="#1f2337">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     @stack('styles')
