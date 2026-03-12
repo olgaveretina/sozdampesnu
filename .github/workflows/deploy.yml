@@ -42,8 +42,6 @@ jobs:
             mkdir -p "$SHARED_DIR/storage/framework/sessions"
             mkdir -p "$SHARED_DIR/storage/framework/views"
             mkdir -p "$SHARED_DIR/storage/logs"
-            chmod -R 775 "$SHARED_DIR/storage"
-            find "$SHARED_DIR/storage" -type d -exec chmod g+s {} \;
 
             # ── 2. Clone repository into new release directory ─────────
             echo "==> Cloning $REPO"
