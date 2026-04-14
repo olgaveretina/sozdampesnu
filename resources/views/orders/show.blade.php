@@ -88,7 +88,7 @@
                     @else
                         {{-- Song order fields --}}
                         <div class="mb-3">
-                            <p class="text-muted small mb-1">Стиль музыки</p>
+                            <p class="text-muted small mb-1">Пожелания</p>
                             <p class="mb-0">{{ $order->music_style }}</p>
                         </div>
                         @if($order->lyrics_edit_permission)

@@ -41,7 +41,7 @@ class OrderResource extends Resource
             // Song-only fields (plans 1 & 2)
             Forms\Components\Section::make('Текст и пожелания')->schema([
                 Forms\Components\Textarea::make('lyrics')->label('Текст песни')->disabled()->rows(8)->columnSpanFull(),
-                Forms\Components\Textarea::make('music_style')->label('Стиль музыки')->disabled()->rows(3),
+                Forms\Components\Textarea::make('music_style')->label('Пожелания')->disabled()->rows(3),
                 Forms\Components\TextInput::make('lyrics_edit_permission')
                     ->label('Изменение текста')
                     ->disabled()
