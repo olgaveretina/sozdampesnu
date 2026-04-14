@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -19,7 +20,11 @@ class ContactController extends Controller
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
-        // TODO: send email / Telegram notification in Phase 6
+        app(TelegramService::class)->notifyContactForm(
+            $request->input('name'),
+            $request->input('email'),
+            $request->input('message'),
+        );
 
         return back()->with('success', 'Сообщение отправлено. Мы свяжемся с вами в ближайшее время.');
     }

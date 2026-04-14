@@ -102,6 +102,18 @@ class TelegramService
         );
     }
 
+    public function notifyContactForm(string $name, string $email, string $message): void
+    {
+        $preview = mb_strimwidth($message, 0, 500, '…');
+
+        $this->notifyAdmin(
+            "📩 *Сообщение с формы контактов*\n" .
+            "Имя: {$name}\n" .
+            "Email: {$email}\n\n" .
+            $preview
+        );
+    }
+
     public function notifyAdmin(string $text): void
     {
         $this->send($this->adminChatId, $text);
