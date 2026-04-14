@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Контакты')
-@section('meta_description', 'Свяжитесь с нами по любым вопросам о заказе песни. Отвечаем быстро.')
+@section('meta_description', 'Свяжитесь с нами по любым вопросам о создании песни из ваших стихов. Отвечаем в течение дня. Поможем выбрать тариф и подготовить текст.')
 @section('canonical', route('contact'))
 
 @section('content')

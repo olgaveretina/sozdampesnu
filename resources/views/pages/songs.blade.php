@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Наши песни — примеры работ')
-@section('meta_description', 'Послушайте примеры песен, созданных нашей командой из стихов реальных клиентов. Убедитесь в качестве перед заказом.')
+@section('title', 'Примеры наших песен')
+@section('meta_description', 'Послушайте песни, которые мы создали из стихов реальных клиентов. Разные жанры и настроения — оцените качество перед заказом.')
 @section('canonical', route('songs'))
 
 @section('content')
@@ -42,7 +42,7 @@
                                 <small class="text-secondary">{{ $song['artist'] }}</small>
                             </div>
                         </div>
-                        <audio controls class="w-100 mt-auto" preload="none"
+                        <audio controls class="w-100 mt-auto" preload="metadata"
                                style="accent-color:#ffc107;">
                             <source src="{{ asset('audio/' . rawurlencode($song['file'])) }}" type="audio/mpeg">
                             Ваш браузер не поддерживает аудио.

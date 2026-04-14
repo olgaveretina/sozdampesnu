@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Пользовательское соглашение')
+@section('meta_description', 'Условия использования сервиса «Создаём песни». Права на готовые песни, гарантия возврата, творческий процесс.')
 @section('canonical', route('terms'))
 
 @section('content')

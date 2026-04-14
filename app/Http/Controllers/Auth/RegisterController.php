@@ -25,6 +25,8 @@ class RegisterController extends Controller
             'email'    => ['required', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
             'agree'    => ['accepted'],
+        ], [
+            'agree.accepted' => 'Вы должны принять условия использования и политику конфиденциальности.',
         ]);
 
         if (config('services.turnstile.secret_key')) {

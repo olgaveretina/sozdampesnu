@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Регистрация')
+@section('meta_description', 'Создайте аккаунт за 30 секунд и закажите песню из ваших стихов. Без подтверждения email — сразу к заказу.')
 @section('robots', 'noindex, follow')
 @section('canonical', route('register'))
 
@@ -46,7 +47,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="password" class="form-label">Пароль</label>
+                        <label for="password" class="form-label">Придумайте пароль</label>
                         <input
                             type="password"
                             id="password"

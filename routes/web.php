@@ -30,6 +30,36 @@ Route::get('/robots.txt', function () {
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/audio/{filename}', function (string $filename, \Illuminate\Http\Request $request) {
+    $path = public_path('audio-files/' . $filename);
+    abort_if(!file_exists($path), 404);
+
+    $size = filesize($path);
+    $headers = [
+        'Content-Type' => 'audio/mpeg',
+        'Accept-Ranges' => 'bytes',
+    ];
+
+    if ($request->header('Range')) {
+        preg_match('/bytes=(\d+)-(\d*)/', $request->header('Range'), $m);
+        $start = (int) $m[1];
+        $end = $m[2] !== '' ? (int) $m[2] : $size - 1;
+        $length = $end - $start + 1;
+
+        $headers['Content-Range'] = "bytes $start-$end/$size";
+        $headers['Content-Length'] = $length;
+
+        return response()->stream(function () use ($path, $start, $length) {
+            $fp = fopen($path, 'rb');
+            fseek($fp, $start);
+            echo fread($fp, $length);
+            fclose($fp);
+        }, 206, $headers);
+    }
+
+    $headers['Content-Length'] = $size;
+    return response()->file($path, $headers);
+})->where('filename', '.*')->name('audio.stream');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/songs',   fn() => view('pages.songs'))->name('songs');

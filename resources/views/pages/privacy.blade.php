@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Политика конфиденциальности')
+@section('meta_description', 'Политика конфиденциальности сервиса «Создаём песни». Ваши данные и тексты защищены. Оплата через ЮKassa — мы не храним данные карт.')
 @section('canonical', route('privacy'))
 
 @section('content')

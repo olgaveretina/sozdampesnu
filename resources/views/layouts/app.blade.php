@@ -8,7 +8,7 @@
         $pageTitle = trim(view()->yieldContent('title'));
         $siteName = 'Создаём песни';
         $fullTitle = trim(view()->yieldContent('full_title')) ?: ($pageTitle ? $pageTitle . ' — ' . $siteName : $siteName);
-        $metaDesc = trim(view()->yieldContent('meta_description') ?: 'Превращаем ваши стихи в профессиональную песню с помощью ИИ и нашей команды. Заказать песню онлайн от 600 ₽.');
+        $metaDesc = trim(view()->yieldContent('meta_description') ?: 'Пришлите стихи — получите готовую песню. Профессиональная команда + ИИ-технологии. Результат от 1 часа, от 600 ₽. Гарантия возврата.');
         $canonicalUrl = trim(view()->yieldContent('canonical') ?: url()->current());
         $keywords = trim(view()->yieldContent('keywords'));
     @endphp
@@ -230,6 +230,15 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('play', function(e) {
+    if (e.target.tagName === 'AUDIO') {
+        document.querySelectorAll('audio').forEach(function(a) {
+            if (a !== e.target) a.pause();
+        });
+    }
+}, true);
+</script>
 @stack('scripts')
 </body>
 </html>

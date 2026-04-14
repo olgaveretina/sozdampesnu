@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Вход')
+@section('title', 'Вход в личный кабинет')
+@section('meta_description', 'Войдите в личный кабинет, чтобы отслеживать заказы, скачивать готовые песни и общаться с нашей командой.')
 @section('robots', 'noindex, follow')
 @section('canonical', route('login'))
 
