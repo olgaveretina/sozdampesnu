@@ -44,7 +44,7 @@ class OrderController extends Controller
         } else {
             $rules = array_merge($commonRules, [
                 'lyrics'      => ['required', 'string', 'max:10000'],
-                'music_style' => ['required', 'string', 'max:2000'],
+                'music_style' => ['nullable', 'string', 'max:2000'],
             ]);
         }
 

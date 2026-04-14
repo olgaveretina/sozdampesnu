@@ -57,75 +57,40 @@
 
 {{-- Banner placeholder --}}
 <div class="text-white rounded-3 p-5 mb-5 text-center" style="min-height: 280px; display: flex; flex-direction: column; justify-content: center; background-color:#1f2337;">
-    <h1 class="display-5 fw-bold mb-3">Превращаем ваши стихи в песню с помощью ИИ</h1>
-    <p class="lead mb-4">Отправьте нам текст — мы создадим музыку с помощью искусственного интеллекта и нашей команды.</p>
+    <div class="mb-3">
+        <span class="badge bg-success fs-6 px-3 py-2">Мы принимаем заказы — {{ now()->translatedFormat('d F Y') }}</span>
+    </div>
+    <h1 class="display-5 fw-bold mb-3">Превращаем ваши стихи в песню</h1>
+    <p class="lead mb-4">Отправьте нам текст — мы знаем, как сделать хорошую песню при помощи лучшего ИИ!</p>
+    <p class="lead mb-4">Каждая песня требует индивидуального творческого подхода. Искусственный интеллект без человека пока не справляется =)</p>
     <div>
         <a href="{{ route('orders.create') }}" class="btn btn-warning btn-lg px-5">Заказать песню</a>
     </div>
 </div>
 
 {{-- Plans --}}
-<h2 class="text-center mb-4">Тарифы</h2>
-<div class="row g-4 mb-5">
+<h2 class="text-center mb-4">Стоимость</h2>
+<div class="row g-4 mb-5 justify-content-center">
 
     <div class="col-md-6">
         <div class="card h-100 shadow-sm border-warning">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ config('plans.1.name') }}</h5>
-                <p class="text-muted small">4 версии песни, сгенерированные ИИ, с минимальными доработками от нас</p>
+                <p class="text-muted small">Стихи прочитает и превратит в песню творческий человек.</p>
+                <p class="text-muted small">Создать стоящую песню с помощью ИИ не так просто, как кажется. Но мы умеем!</p>
                 <ul class="list-unstyled small mt-2">
-                    <li>✅ 4 варианта от ИИ</li>
+                    <li>✅ 1-3 варианта</li>
                     <li>✅ Срок: от 1 часа до 2 дней</li>
-                    <li>📌 Мы почти не редактируем песню, вариант ИИ</li>
-                    <li>📌 Правки по вашим инструкциям: +400 руб.</li>
+                    <li>✅ Мы сгенерируем много версий, выберем лучшие, доработаем</li>
+                    <li>📌 При необходимости, внесем дополнительные правки по вашим инструкциям: +400 руб.</li>
                 </ul>
                 <div class="mt-auto">
                     <p class="fs-4 fw-bold mb-3">{{ number_format(config('plans.1.price'), 0, '.', ' ') }} ₽</p>
-                    <a href="{{ route('orders.create') }}?plan=1" class="btn btn-warning w-100">Выбрать</a>
+                    <a href="{{ route('orders.create') }}?plan=1" class="btn btn-warning w-100">Заказать</a>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="col-md-6">
-        <div class="card h-100 shadow-sm border-warning">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ config('plans.2.name') }}</h5>
-                <p class="text-muted small">Мы отдельно поработаем над вашей песней и пришлем 4 удачные версии</p>
-                <ul class="list-unstyled small mt-2">
-                    <li>✅ 4 лучших варианта от ИИ, с нашими доработками</li>
-                    <li>✅ Срок: от 2 часов до 2 дней</li>
-                    <li>📌 Правки по вашим инструкциям: +400 руб.</li>
-                </ul>
-                <div class="mt-auto">
-                    <p class="fs-4 fw-bold mb-3">{{ number_format(config('plans.2.price'), 0, '.', ' ') }} ₽</p>
-                    <a href="{{ route('orders.create') }}?plan=2" class="btn btn-warning w-100">Выбрать</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @if(!config('plans.3.disabled'))
-    <div class="col-md-4">
-        <div class="card h-100 shadow-sm border-warning">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ config('plans.3.name') }}</h5>
-                <p class="text-muted small">Это кропотливая работа, но мы справимся! =) Вы можете описать, как будет выглядеть клип.</p>
-                <ul class="list-unstyled small mt-2">
-                    <li>✅ Предоставим варианты исполнителей, выбор за вами</li>
-                    <li>✅ Срок - от 2 до 14 дней</li>
-                    <li>✅ Клип будет выглядеть профессионально</li>
-                    <li>📌 Вы предоставляете полностью готовый аудиофайл</li>
-                    <li>📌 Правки по вашим инструкциям: от 400 руб.</li>
-                </ul>
-                <div class="mt-auto">
-                    <p class="fs-4 fw-bold mb-3">{{ number_format(config('plans.3.price'), 0, '.', ' ') }} ₽</p>
-                    <a href="{{ route('orders.create') }}?plan=3" class="btn btn-warning w-100">Выбрать</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
 
 </div>
 

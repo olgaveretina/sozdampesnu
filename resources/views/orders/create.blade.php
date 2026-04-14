@@ -15,8 +15,19 @@
                 <form action="{{ route('orders.store') }}" method="POST" enctype="multipart/form-data" novalidate>
                     @csrf
 
+                    @if($errors->any())
+                        <div class="alert alert-danger mb-4">
+                            <strong>Пожалуйста, исправьте ошибки:</strong>
+                            <ul class="mb-0 mt-1">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     {{-- Plan selection --}}
-                    <h5 class="mb-3">Выберите тариф</h5>
+                    <h5 class="mb-3">Тариф</h5>
                     <div class="row g-3 mb-4">
                         @foreach(\App\Models\Order::plans() as $planId => $plan)
                             @if(empty($plan['disabled']))
@@ -50,7 +61,7 @@
                         <input type="text" id="song_name" name="song_name"
                                class="form-control @error('song_name') is-invalid @enderror"
                                value="{{ old('song_name') }}"
-                               placeholder="Название вашей песни / видеоклипа" required>
+                               placeholder="Название вашей песни" required>
                         @error('song_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
@@ -65,10 +76,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="music_style" class="form-label fw-semibold">Описание стиля музыки <span class="text-danger">*</span></label>
+                            <label for="music_style" class="form-label fw-semibold">Особые пожелания</label>
                             <textarea id="music_style" name="music_style" rows="3"
-                                      class="form-control @error('music_style') is-invalid @enderror"
-                                      placeholder="Например: рок-баллада в стиле 80-х, грустная мелодия с пианино, быстрый поп с гитарой...">{{ old('music_style') }}</textarea>
+                                      class="form-control @error('music_style') is-invalid @enderror">{{ old('music_style') }}</textarea>
                             @error('music_style')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
@@ -197,6 +207,7 @@
 
         // Toggle required attributes
         songFields.querySelectorAll('[required], textarea, input[type=text], input[type=file]').forEach(function (el) {
+            if (el.id === 'music_style') return;
             el.required = !isVideo;
         });
         videoFields.querySelectorAll('textarea, input[type=file]').forEach(function (el) {
@@ -217,6 +228,7 @@
     // Init on page load
     const checked = document.querySelector('.plan-radio:checked');
     if (checked) applyPlan(checked.value);
+
 })();
 </script>
 @endpush
