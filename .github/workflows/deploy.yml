@@ -93,7 +93,8 @@ jobs:
 
             # ── 12. Reload services ────────────────────────────────────
             echo "==> Reloading services"
-            sudo supervisorctl restart all 2>/dev/null || true
+            # Only restart aipesni-specific supervisor programs (skip hudee.ru processes)
+            # sudo supervisorctl restart aipesni-worker:* 2>/dev/null || true
             sudo systemctl reload php8.4-fpm 2>/dev/null || \
               sudo systemctl reload php8.3-fpm 2>/dev/null || true
 
