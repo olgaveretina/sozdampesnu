@@ -33,6 +33,15 @@
                                   required>{{ old('message') }}</textarea>
                         @error('message')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                    @if(config('services.turnstile.site_key'))
+                    <div class="mb-3">
+                        <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key') }}"></div>
+                        @error('cf-turnstile-response')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
+
                     <button type="submit" class="btn btn-primary w-100">Отправить</button>
                 </form>
             </div>
@@ -40,3 +49,7 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+@endpush
